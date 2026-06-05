@@ -1,0 +1,15 @@
+{
+  "name": "wdhj",
+  "version": "1.0.0",
+  "description": "WDHJ - 本地文档处理工具箱",
+  "scripts": {
+    "tauri": "tauri",
+    "copy-assets": "node -e \"const fs=require('fs'),p=require('path');function c(s,d){if(fs.existsSync(s)){fs.mkdirSync(d,{recursive:true});const st=fs.statSync(s);if(st.isDirectory()){fs.readdirSync(s).forEach(f=>c(p.join(s,f),p.join(d,f)))}else{fs.copyFileSync(s,d)}}};['index.html','css','js','docs'].forEach(f=>c(f,'dist/'+f))\"",
+    "prebuild": "npm run copy-assets",
+    "build": "tauri build",
+    "dev": "tauri dev"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

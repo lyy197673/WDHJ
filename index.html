@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档工具合集</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- pdf-lib for PDF manipulation -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <!-- PDF.js for PDF rendering -->
+    <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <!-- JSZip for ZIP creation -->
+    <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+    <!-- FileSaver.js for file downloads -->
+    <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+    <!-- PptxGenJS for PPT creation -->
+    <script src="https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <!-- html2canvas for rendering HTML to canvas -->
+    <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header id="app-header">
+            <div class="header-left">
+                <button id="btn-back" class="btn-icon hidden" title="返回首页">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <h1 id="app-title" class="header-title">刘桑出品</h1>
+            </div>
+            <div class="header-right">
+                <button id="btn-theme" class="btn-icon" title="切换主题">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </button>
+                <span class="header-subtitle">本地浏览器处理文档 · 隐私安全</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main id="app-content">
+            <!-- Dynamic content rendered here -->
+        </main>
+
+        <!-- Global Drag Overlay -->
+        <div id="drag-overlay" class="drag-overlay hidden">
+            <div class="drag-overlay-content">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                <p>拖放文件到此处</p>
+            </div>
+        </div>
+
+        <!-- Lightbox for image preview -->
+        <div id="lightbox" class="lightbox hidden">
+            <button class="lightbox-close" title="关闭">&times;</button>
+            <button class="lightbox-prev" title="上一张">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="lightbox-next" title="下一张">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <div class="lightbox-content">
+                <img id="lightbox-img" src="" alt="preview">
+            </div>
+            <div class="lightbox-counter" id="lightbox-counter"></div>
+        </div>
+
+        <!-- Toast container -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/common.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/homepage.js"></script>
+    <script src="js/image-tools.js"></script>
+    <script src="js/pdf-tools.js"></script>
+    <script src="js/ppt-tools.js"></script>
+
+
+    <script src="js/app.js"></script>
+</body>
+</html>
