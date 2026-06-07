@@ -22,26 +22,31 @@
 </head>
 <body>
     <div id="app">
-        <!-- Header -->
-        <header id="app-header">
-            <div class="header-left">
-                <button id="btn-back" class="btn-icon hidden" title="返回首页">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                </button>
-                <h1 id="app-title" class="header-title">刘桑出品</h1>
-            </div>
-            <div class="header-right">
-                <button id="btn-theme" class="btn-icon" title="切换主题">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                </button>
-                <span class="header-subtitle">本地浏览器处理文档 · 隐私安全</span>
-            </div>
-        </header>
+        <!-- Floating back button (left) -->
+        <button id="btn-back" class="btn-icon-float btn-back-float hidden" title="返回首页">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+
+        <!-- Floating theme toggle (top-right) -->
+        <button id="btn-theme" class="btn-icon-float btn-theme-float" title="切换主题">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
 
         <!-- Main Content -->
         <main id="app-content">
             <!-- Dynamic content rendered here -->
         </main>
+
+        <!-- Footer -->
+        <footer id="app-footer">
+            <div class="footer-inner">
+                <span class="footer-brand">AAA刘桑出品</span>
+                <span class="footer-divider">·</span>
+                <span class="footer-copy">© 2026 文档工具合集</span>
+                <span class="footer-divider">·</span>
+                <span class="footer-contact" id="footer-email">站长邮箱：<a href="mailto:3070646019@qq.com?subject=文档工具合集-反馈">3070646019@qq.com</a></span>
+            </div>
+        </footer>
 
         <!-- Global Drag Overlay -->
         <div id="drag-overlay" class="drag-overlay hidden">
@@ -68,6 +73,98 @@
 
         <!-- Toast container -->
         <div id="toast-container" class="toast-container"></div>
+
+        <!-- Splash Screen Modal -->
+        <div id="splash-overlay" class="splash-overlay">
+            <div class="splash-backdrop"></div>
+            <div class="splash-modal">
+                <div class="splash-glow"></div>
+                <div class="splash-header">
+                    <div class="splash-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        更新日志
+                    </div>
+                    <h2 class="splash-title">文档工具合集</h2>
+                    <p class="splash-version">v2.0 · 2026年6月更新</p>
+                </div>
+                <div class="splash-body">
+                    <div class="splash-section">
+                        <h4 class="splash-section-title">
+                            <span class="splash-section-icon">🆕</span> 新增功能
+                        </h4>
+                        <ul class="splash-list">
+                            <li>
+                                <span class="splash-tag new">新</span>
+                                <div class="splash-item-content">
+                                    <strong>FBX 3D模型查看器</strong>
+                                    <p>支持导入FBX格式的3D模型，提供旋转、缩放、平移等交互式预览，支持线框/实体/材质多种渲染模式，模型层级结构浏览与属性编辑。</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="splash-tag new">新</span>
+                                <div class="splash-item-content">
+                                    <strong>图片批量处理</strong>
+                                    <p>支持批量调整尺寸、转换格式、压缩图片，一键应用到所有选中文件，大幅提升工作效率。</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="splash-tag new">新</span>
+                                <div class="splash-item-content">
+                                    <strong>图片水印功能</strong>
+                                    <p>支持文字水印和图片水印，可自定义位置、透明度、大小，批量添加水印保护您的图片版权。</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="splash-section">
+                        <h4 class="splash-section-title">
+                            <span class="splash-section-icon">🔧</span> 问题修复与优化
+                        </h4>
+                        <ul class="splash-list">
+                            <li>
+                                <span class="splash-tag fix">修复</span>
+                                <div class="splash-item-content">
+                                    <strong>PDF工具稳定性修复</strong>
+                                    <p>修复了PDF合并时大文件内存溢出问题，优化了分页渲染性能，修复了部分PDF页面提取异常。</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="splash-tag fix">修复</span>
+                                <div class="splash-item-content">
+                                    <strong>PPT导出兼容性优化</strong>
+                                    <p>修复了PPT导出时中文字体缺失问题，优化了图片在PPT中的排版布局。</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="splash-tag improve">优化</span>
+                                <div class="splash-item-content">
+                                    <strong>暗色/亮色主题切换</strong>
+                                    <p>完善了全局主题切换动画，修复了部分组件在亮色主题下显示异常的问题，过渡更加流畅自然。</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="splash-tag improve">优化</span>
+                                <div class="splash-item-content">
+                                    <strong>交互体验全面提升</strong>
+                                    <p>优化了文件拖拽反馈、页面切换动画、按钮悬停效果，增加了全局拖拽上传支持。</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="splash-footer">
+                    <label class="splash-checkbox-label">
+                        <input type="checkbox" id="splash-dont-show">
+                        <span class="splash-checkbox-custom"></span>
+                        <span>下次不再提醒</span>
+                    </label>
+                    <button id="splash-close-btn" class="splash-close-btn">
+                        <span>开始使用</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Three.js importmap for FBX viewer (resolves to absolute CDN URLs) -->

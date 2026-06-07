@@ -579,10 +579,101 @@ const Theme = {
     }
 };
 
-// Initialize lightbox, global drag, theme, and particles on load
+// ===== Splash Screen / Changelog Modal =====
+const SplashScreen = {
+    _key: 'wdhj-splash-dismissed',
+    _version: 'v2.0',  // bump this when there are new updates to show
+
+    init() {
+        // Check if user previously chose "don't show again" for this version
+        const dismissed = localStorage.getItem(this._key);
+        if (dismissed === this._version) {
+            return; // User already dismissed this version
+        }
+
+        // Show splash after a short delay (let other UI settle)
+        setTimeout(() => this._show(), 300);
+    },
+
+    _show() {
+        const overlay = document.getElementById('splash-overlay');
+        if (!overlay) return;
+
+        overlay.classList.remove('hidden');
+
+        // Close button handler
+        const closeBtn = document.getElementById('splash-close-btn');
+        const checkbox = document.getElementById('splash-dont-show');
+
+        const close = () => {
+            if (checkbox && checkbox.checked) {
+                localStorage.setItem(this._key, this._version);
+            }
+
+            overlay.classList.add('closing');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('closing');
+            }, 250);
+        };
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', close);
+        }
+
+        // Click backdrop to close
+        const backdrop = overlay.querySelector('.splash-backdrop');
+        if (backdrop) {
+            backdrop.addEventListener('click', close);
+        }
+
+        // Escape key to close
+        const escHandler = (e) => {
+            if (e.key === 'Escape') {
+                close();
+                document.removeEventListener('keydown', escHandler);
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+    }
+};
+
+// ===== Footer Email Click Handler =====
+function initFooterEmail() {
+    const el = document.getElementById('footer-email');
+    if (!el) return;
+
+    const email = '3070646019@qq.com';
+    const mailtoHref = `mailto:${email}?subject=${encodeURIComponent('文档工具合集-反馈')}`;
+
+    el.addEventListener('click', (e) => {
+        // Let the <a> tag handle the mailto: protocol
+        const a = el.querySelector('a');
+        if (!a) return;
+
+        // Try to open mail client
+        const opened = window.open(mailtoHref, '_self');
+
+        // If mailto failed or was blocked, copy email to clipboard as fallback
+        setTimeout(() => {
+            if (document.hidden === false) {
+                // mailto may have been blocked; copy to clipboard
+                navigator.clipboard?.writeText(email).then(() => {
+                    Toast.info('📋 邮箱地址已复制到剪贴板，请手动发送邮件');
+                }).catch(() => {
+                    Toast.info(`📧 请手动发送邮件至：${email}`);
+                });
+            }
+        }, 800);
+    });
+}
+
+// Initialize lightbox, global drag, theme, splash screen, email, and particles on load
 document.addEventListener('DOMContentLoaded', () => {
     Lightbox.init();
     initGlobalDragDrop();
     Theme.init();
+    SplashScreen.init();
+    initFooterEmail();
     Particles.init();
 });

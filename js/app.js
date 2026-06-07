@@ -19,7 +19,6 @@ const App = {
         const hash = window.location.hash.slice(1) || '/';
         const content = document.getElementById('app-content');
         const backBtn = document.getElementById('btn-back');
-        const title = document.getElementById('app-title');
 
         const parts = hash.split('/').filter(Boolean);
         const section = parts[0] || '';
@@ -55,24 +54,19 @@ const App = {
 
         switch (section) {
             case 'image':
-                title.textContent = '图片工具';
                 ImageTools.render(content, sub || 'collage');
                 break;
             case 'pdf':
-                title.textContent = 'PDF工具';
                 PDFTools.render(content, sub || 'convert');
                 break;
             case 'ppt':
-                title.textContent = 'PPT工具';
                 PPTTools.render(content, sub || 'split');
                 break;
             case 'fbx-viewer':
-                title.textContent = 'FBX模型查看器';
                 await this._loadFBXViewer(content, sub || '');
                 break;
 
             default:
-                title.textContent = '刘桑出品';
                 Homepage.render(content);
                 break;
         }
