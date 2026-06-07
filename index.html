@@ -18,6 +18,7 @@
     <script src="https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <!-- html2canvas for rendering HTML to canvas -->
     <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 </head>
 <body>
     <div id="app">
@@ -69,7 +70,17 @@
         <div id="toast-container" class="toast-container"></div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Three.js importmap for FBX viewer (resolves to absolute CDN URLs) -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <!-- App Scripts -->
     <script src="js/common.js"></script>
     <script src="js/particles.js"></script>
     <script src="js/homepage.js"></script>
@@ -78,6 +89,7 @@
     <script src="js/ppt-tools.js"></script>
 
 
+    <script src="js/fbx-viewer.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

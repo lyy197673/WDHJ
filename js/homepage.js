@@ -42,8 +42,14 @@ const Homepage = {
                 desc: '拆分 · 转换 · 压缩',
                 route: '#/ppt'
             },
-
-
+            {
+                id: 'fbx-viewer',
+                icon: '🧊',
+                iconClass: 'fbx',
+                title: 'FBX查看器',
+                desc: '3D模型预览 · 部件编辑 · 动画播放 · 截图导出',
+                route: '#/fbx-viewer'
+            },
 
         ];
 

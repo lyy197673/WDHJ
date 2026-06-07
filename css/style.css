@@ -393,6 +393,7 @@ body::after {
 .tool-card-icon.ppt { background: rgba(255, 237, 213, 0.15); box-shadow: 0 0 16px rgba(249, 115, 22, 0.15); }
 .tool-card-icon.word { background: rgba(219, 234, 254, 0.15); box-shadow: 0 0 16px rgba(59, 130, 246, 0.15); }
 .tool-card-icon.excel { background: rgba(209, 250, 229, 0.15); box-shadow: 0 0 16px rgba(16, 185, 129, 0.15); }
+.tool-card-icon.fbx { background: rgba(232, 234, 255, 0.15); box-shadow: 0 0 16px rgba(129, 140, 248, 0.15); }
 
 .tool-card h3 {
     font-size: 16px;
@@ -1478,4 +1479,518 @@ input[type="checkbox"] {
 @media (max-width: 480px) {
     .header-subtitle { display: none; }
     .tool-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ================================================================
+   FBX Model Viewer
+   ================================================================ */
+
+.fbx-viewer-container {
+    height: calc(100vh - 56px - 48px); /* header 56px + padding 48px */
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden;
+}
+
+.fbx-layout {
+    display: flex;
+    height: 100%;
+    gap: 0;
+}
+
+/* ---- Sidebar ---- */
+.fbx-sidebar {
+    width: 280px;
+    min-width: 280px;
+    border-right: 1px solid var(--border);
+    background: var(--bg-card);
+    overflow-y: auto;
+    overflow-x: hidden;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] .fbx-sidebar {
+    background: var(--bg-card);
+}
+
+.fbx-sidebar-inner {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fbx-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px;
+}
+
+.fbx-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ---- Upload Area ---- */
+.fbx-upload-area {
+    border: 2px dashed rgba(99, 102, 241, 0.25);
+    border-radius: var(--radius);
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-secondary);
+}
+
+.fbx-upload-area:hover,
+.fbx-upload-area.dragover {
+    border-color: var(--primary);
+    background: var(--primary-bg);
+    box-shadow: var(--primary-glow);
+    color: var(--primary-light);
+}
+
+.fbx-upload-area svg {
+    margin-bottom: 6px;
+    opacity: 0.5;
+}
+
+.fbx-upload-area p {
+    font-size: 12px;
+    margin: 0;
+}
+
+/* ---- Model Info ---- */
+.fbx-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.fbx-info-item {
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    padding: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.fbx-info-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-light);
+    word-break: break-all;
+}
+
+.fbx-info-lbl {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* ---- Mode Buttons ---- */
+.fbx-mode-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.fbx-mode-btn {
+    flex: 1;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.fbx-mode-btn:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+    color: var(--text);
+}
+
+.fbx-mode-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--primary-glow);
+}
+
+/* ---- Toggles ---- */
+.fbx-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 2px 0;
+}
+
+.fbx-toggle input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+}
+
+/* ---- Hierarchy Tree ---- */
+.fbx-tree {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.fbx-tree-actions {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+
+.fbx-tree-actions .btn {
+    font-size: 10px;
+    padding: 3px 6px;
+}
+
+.fbx-tree-node {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+    white-space: nowrap;
+}
+
+.fbx-tree-node:hover {
+    background: var(--bg-hover);
+}
+
+.fbx-tree-node.active {
+    background: var(--primary-bg);
+    color: var(--primary-light);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.fbx-tree-node.leaf-empty {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.fbx-tree-toggle {
+    width: 14px;
+    text-align: center;
+    font-size: 9px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+}
+
+.fbx-tree-icon {
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.fbx-tree-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11px;
+}
+
+.fbx-tree-name.hidden-part {
+    opacity: 0.4;
+    text-decoration: line-through;
+}
+
+.fbx-tree-vis {
+    font-size: 11px;
+    flex-shrink: 0;
+    padding: 2px;
+    border-radius: 3px;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+
+.fbx-tree-vis:hover {
+    opacity: 1;
+    background: var(--bg-hover);
+}
+
+/* ---- Property Panel ---- */
+.fbx-property-content {
+    font-size: 12px;
+}
+
+.fbx-prop-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fbx-property-content .control-group {
+    margin-bottom: 6px;
+}
+
+.fbx-property-content .control-group label {
+    font-size: 11px;
+}
+
+.fbx-property-content .range-value {
+    font-size: 10px;
+}
+
+/* ---- Animation Controls ---- */
+.fbx-anim-controls {
+    font-size: 12px;
+}
+
+.fbx-anim-buttons {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 6px;
+}
+
+.fbx-anim-buttons .btn {
+    flex: 1;
+    justify-content: center;
+}
+
+.fbx-anim-info {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* ---- 3D Viewport ---- */
+.fbx-viewport {
+    flex: 1;
+    position: relative;
+    background: #ffffff;
+    overflow: hidden;
+    min-width: 0;
+}
+
+[data-theme="dark"] .fbx-viewport {
+    /* In dark mode, the viewport background should still be white for the 3D view */
+    background: #ffffff;
+}
+
+.fbx-viewport canvas {
+    display: block;
+}
+
+.fbx-viewport-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #999;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.fbx-viewport-placeholder svg {
+    margin-bottom: 12px;
+}
+
+.fbx-viewport-placeholder p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ---- Status Bar ---- */
+.fbx-viewport-status {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 12px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 10px;
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    z-index: 5;
+}
+
+.fbx-viewport-status span {
+    white-space: nowrap;
+}
+
+/* ---- View Angle & Transform Controls ---- */
+.fbx-view-ctrl {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    user-select: none;
+}
+
+.fbx-view-ctrl-presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+}
+
+.fbx-view-btn {
+    width: 34px;
+    height: 28px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(30,30,50,0.75);
+    color: rgba(255,255,255,0.8);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.fbx-view-btn:hover {
+    background: rgba(99, 102, 241, 0.35);
+    border-color: rgba(99, 102, 241, 0.5);
+    color: #fff;
+}
+
+.fbx-view-btn.active {
+    background: rgba(99, 102, 241, 0.55);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+}
+
+.fbx-view-ctrl-fine {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    justify-content: center;
+}
+
+.fbx-view-fine-label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.45);
+    margin-right: 2px;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+}
+
+.fbx-view-ctrl-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 0 1px;
+}
+
+.fbx-transform-btns {
+    display: flex;
+    gap: 3px;
+}
+
+.fbx-transform-btn {
+    width: 34px;
+    height: 28px;
+    font-size: 12px;
+}
+
+.fbx-transform-btn.active {
+    background: rgba(34, 211, 238, 0.3);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
+}
+
+.fbx-view-nudge {
+    width: 26px;
+    height: 24px;
+    font-size: 10px;
+    background: rgba(30,30,50,0.55);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .fbx-viewer-container {
+        height: calc(100vh - 56px - 32px);
+    }
+
+    .fbx-layout {
+        flex-direction: column;
+    }
+
+    .fbx-sidebar {
+        width: 100%;
+        min-width: 100%;
+        max-height: 40%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .fbx-viewport {
+        flex: 1;
+        min-height: 300px;
+    }
+
+    .fbx-view-ctrl {
+        top: 6px;
+        right: 6px;
+        gap: 4px;
+    }
+
+    .fbx-view-btn {
+        width: 30px;
+        height: 26px;
+        font-size: 10px;
+    }
+
+    .fbx-view-nudge {
+        width: 24px;
+        height: 22px;
+    }
+
+    .fbx-tree {
+        max-height: 120px;
+    }
+
+    .fbx-info-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .fbx-mode-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .fbx-mode-btn {
+        font-size: 10px;
+        padding: 4px 6px;
+    }
 }
