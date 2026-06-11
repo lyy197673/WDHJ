@@ -473,12 +473,11 @@ async function batchDownload(files, zipName) {
 function initGlobalDragDrop() {
     const overlay = document.getElementById('drag-overlay');
     let dragCounter = 0;
+    let isExternalDrag = false;
 
-    // Track whether the current drag is an internal sortable reorder
     window._isSortableDrag = false;
 
     document.addEventListener('dragstart', e => {
-        // If drag originates from a sortable item or stamp library, mark it so we skip the overlay
         if (e.target.closest('.sortable-item') || e.target.closest('.stamp-lib-item')) {
             window._isSortableDrag = true;
         }
@@ -486,14 +485,17 @@ function initGlobalDragDrop() {
 
     document.addEventListener('dragend', () => {
         window._isSortableDrag = false;
+        isExternalDrag = false;
     });
 
     document.addEventListener('dragenter', e => {
         e.preventDefault();
-        // Skip overlay for internal sortable reorder drags
         if (window._isSortableDrag) return;
         dragCounter++;
-        overlay.classList.remove('hidden');
+        if (dragCounter === 1) {
+            isExternalDrag = true;
+            overlay.classList.remove('hidden');
+        }
     });
 
     document.addEventListener('dragleave', e => {
@@ -502,6 +504,7 @@ function initGlobalDragDrop() {
         dragCounter--;
         if (dragCounter <= 0) {
             dragCounter = 0;
+            isExternalDrag = false;
             overlay.classList.add('hidden');
         }
     });
@@ -513,9 +516,42 @@ function initGlobalDragDrop() {
     document.addEventListener('drop', e => {
         e.preventDefault();
         dragCounter = 0;
+        isExternalDrag = false;
         overlay.classList.add('hidden');
-        // Global drop handled by individual upload areas
     });
+
+    // Make overlay a valid drop target that forwards to upload areas
+    if (overlay) {
+        overlay.addEventListener('dragover', e => {
+            e.preventDefault();
+        });
+
+        overlay.addEventListener('drop', e => {
+            e.preventDefault();
+            overlay.classList.add('hidden');
+            dragCounter = 0;
+            isExternalDrag = false;
+
+            // Find the deepest visible upload area under cursor
+            overlay.style.pointerEvents = 'none';
+            const target = document.elementFromPoint(e.clientX, e.clientY);
+            overlay.style.pointerEvents = '';
+
+            if (target) {
+                const uploadArea = target.closest('.upload-area, .stamp-base-upload, .stamp-canvas-viewport, .fbx-upload-area');
+                if (uploadArea) {
+                    // Re-dispatch the drop event to the upload area
+                    const dropEvent = new DragEvent('drop', {
+                        bubbles: true,
+                        dataTransfer: e.dataTransfer,
+                        clientX: e.clientX,
+                        clientY: e.clientY
+                    });
+                    uploadArea.dispatchEvent(dropEvent);
+                }
+            }
+        });
+    }
 }
 
 // ===== Smooth Tab Content Switch =====

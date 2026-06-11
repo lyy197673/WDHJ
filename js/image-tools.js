@@ -1677,6 +1677,7 @@ const ImageTools = {
                             <option value="image/webp">WebP</option>
                             <option value="image/avif">AVIF</option>
                             <option value="image/x-icon">ICO (图标)</option>
+                            <option value="application/pdf">PDF</option>
                         </select>
                     </div>
                     <div class="control-group">
@@ -1777,9 +1778,10 @@ const ImageTools = {
                 'image/avif': 'AVIF',
                 'image/bmp': 'BMP',
                 'image/svg+xml': 'SVG',
-                'image/x-icon': 'ICO'
-            };
-            return map[mime] || mime.split('/')[1]?.toUpperCase() || '未知';
+                    'image/x-icon': 'ICO',
+                    'application/pdf': 'PDF'
+                };
+                return map[mime] || mime.split('/')[1]?.toUpperCase() || '未知';
         }
 
         // ---- UI update helpers ----
@@ -1803,7 +1805,7 @@ const ImageTools = {
 
         // ---- Helper: get output extension ----
         function getOutputExt() {
-            const extMap = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/avif': 'avif', 'image/x-icon': 'ico' };
+            const extMap = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/avif': 'avif', 'image/x-icon': 'ico', 'application/pdf': 'pdf' };
             return extMap[state.format] || 'png';
         }
 
@@ -2021,6 +2023,32 @@ const ImageTools = {
                     return;
                 }
                 blob = await buildIcoBlob(img, sizes);
+            } else if (state.format === 'application/pdf') {
+                // PDF: create single-page PDF with the image
+                const { PDFDocument } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+
+                let w = img.naturalWidth;
+                let h = img.naturalHeight;
+                if (state.maxWidth > 0 && w > state.maxWidth) {
+                    h = Math.round(h * (state.maxWidth / w));
+                    w = state.maxWidth;
+                }
+                if (state.maxHeight > 0 && h > state.maxHeight) {
+                    w = Math.round(w * (state.maxHeight / h));
+                    h = state.maxHeight;
+                }
+
+                const canvas = Utils.imageToCanvas(img, w, h);
+                const pngDataUrl = canvas.toDataURL('image/png');
+                const pngBytes = await fetch(pngDataUrl).then(r => r.arrayBuffer());
+                const pngImage = await pdfDoc.embedPng(pngBytes);
+
+                const page = pdfDoc.addPage([w, h]);
+                page.drawImage(pngImage, { x: 0, y: 0, width: w, height: h });
+
+                const pdfBytes = await pdfDoc.save();
+                blob = new Blob([pdfBytes], { type: 'application/pdf' });
             } else {
                 let w = img.naturalWidth;
                 let h = img.naturalHeight;
@@ -2103,6 +2131,64 @@ const ImageTools = {
             state.maxWidth = parseInt(el.maxW.value) || 0;
             state.maxHeight = parseInt(el.maxH.value) || 0;
 
+            // Special handling: PDF merges all selected into one multi-page document
+            if (state.format === 'application/pdf') {
+                Loading.show('正在生成 PDF...');
+                try {
+                    const { PDFDocument } = PDFLib;
+                    const pdfDoc = await PDFDocument.create();
+
+                    for (let i = 0; i < selected.length; i++) {
+                        Loading.progress(Math.round((i + 1) / selected.length * 100));
+                        Loading.setText(`正在处理 ${selected[i].name}...`);
+                        const dataUrl = await Utils.readAsDataURL(selected[i].file);
+                        const img = await Utils.loadImage(dataUrl);
+
+                        let w = img.naturalWidth;
+                        let h = img.naturalHeight;
+                        if (state.maxWidth > 0 && w > state.maxWidth) {
+                            h = Math.round(h * (state.maxWidth / w));
+                            w = state.maxWidth;
+                        }
+                        if (state.maxHeight > 0 && h > state.maxHeight) {
+                            w = Math.round(w * (state.maxHeight / h));
+                            h = state.maxHeight;
+                        }
+
+                        const canvas = Utils.imageToCanvas(img, w, h);
+                        const pngDataUrl = canvas.toDataURL('image/png');
+                        const pngBytes = await fetch(pngDataUrl).then(r => r.arrayBuffer());
+                        const pngImage = await pdfDoc.embedPng(pngBytes);
+                        const page = pdfDoc.addPage([w, h]);
+                        page.drawImage(pngImage, { x: 0, y: 0, width: w, height: h });
+
+                        selected[i].status = 'done';
+                    }
+
+                    const pdfBytes = await pdfDoc.save();
+                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+                    // Assign the merged PDF to the first item as the result
+                    selected[0].convertedBlob = blob;
+                    selected[0].convertedSize = blob.size;
+                    for (let i = 1; i < selected.length; i++) {
+                        selected[i].convertedBlob = null;
+                        selected[i].convertedSize = 0;
+                        selected[i].status = 'pending';
+                    }
+
+                    Loading.hide();
+                    renderFileList();
+                    renderResults();
+                    Toast.success(`已将 ${selected.length} 张图片合并为 PDF`);
+                } catch (err) {
+                    Loading.hide();
+                    console.error('PDF merge failed:', err);
+                    Toast.error('PDF 生成失败');
+                }
+                return;
+            }
+
             Loading.show('正在转换图片...');
             for (let i = 0; i < selected.length; i++) {
                 Loading.progress(Math.round((i + 1) / selected.length * 100));
@@ -2127,9 +2213,11 @@ const ImageTools = {
             el.qualityVal.textContent = el.qualitySlider.value;
         });
 
-        // ---- Format change: show/hide ICO sizes ----
+        // ---- Format change: show/hide ICO sizes, show/hide quality for PDF ----
         el.formatSelect.addEventListener('change', () => {
-            el.icoSizesWrap.classList.toggle('hidden', el.formatSelect.value !== 'image/x-icon');
+            const val = el.formatSelect.value;
+            el.icoSizesWrap.classList.toggle('hidden', val !== 'image/x-icon');
+            el.qualitySlider.closest('.control-group').classList.toggle('hidden', val === 'application/pdf');
         });
 
         // ---- Selection buttons ----
