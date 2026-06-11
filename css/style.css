@@ -614,6 +614,11 @@ body::after {
     box-shadow: var(--primary-glow);
 }
 
+.file-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
 .file-item-checkbox {
     position: absolute;
     top: 8px;

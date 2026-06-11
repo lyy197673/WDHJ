@@ -143,38 +143,58 @@ const Utils = {
 
     // Sortable helper - make list draggable
     makeSortable(container, onReorder) {
+        // Abort previous sortable instance on this container to avoid duplicate listeners
+        if (container._sortableAbort) {
+            container._sortableAbort.abort();
+        }
+        const ac = new AbortController();
+        container._sortableAbort = ac;
+        const { signal } = ac;
+
         let dragEl = null;
-        let placeholder = null;
 
         container.addEventListener('dragstart', e => {
-            if (!e.target.closest('.sortable-item')) return;
-            dragEl = e.target.closest('.sortable-item');
-            dragEl.style.opacity = '0.4';
+            const item = e.target.closest('.sortable-item');
+            if (!item) return;
+            dragEl = item;
+            item.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
-        });
+            // Required for Firefox and other browsers to initiate drag
+            e.dataTransfer.setData('text/plain', item.dataset.id || '');
+        }, { signal });
+
+        container.addEventListener('dragenter', e => {
+            const target = e.target.closest('.sortable-item');
+            if (!target || target === dragEl) return;
+            const rect = target.getBoundingClientRect();
+            const mid = rect.top + rect.height / 2;
+            if (e.clientY < mid) {
+                container.insertBefore(dragEl, target);
+            } else {
+                const next = target.nextSibling;
+                if (next !== dragEl) {
+                    container.insertBefore(dragEl, next || null);
+                }
+            }
+        }, { signal });
 
         container.addEventListener('dragover', e => {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
-            const target = e.target.closest('.sortable-item');
-            if (target && target !== dragEl) {
-                const rect = target.getBoundingClientRect();
-                const mid = rect.top + rect.height / 2;
-                if (e.clientY < mid) {
-                    container.insertBefore(dragEl, target);
-                } else {
-                    container.insertBefore(dragEl, target.nextSibling);
-                }
-            }
-        });
+        }, { signal });
+
+        container.addEventListener('drop', e => {
+            e.preventDefault();
+            e.stopPropagation();
+        }, { signal });
 
         container.addEventListener('dragend', e => {
             if (dragEl) {
-                dragEl.style.opacity = '';
+                dragEl.classList.remove('dragging');
                 dragEl = null;
                 if (onReorder) onReorder();
             }
-        });
+        }, { signal });
     }
 };
 
@@ -454,14 +474,31 @@ function initGlobalDragDrop() {
     const overlay = document.getElementById('drag-overlay');
     let dragCounter = 0;
 
+    // Track whether the current drag is an internal sortable reorder
+    window._isSortableDrag = false;
+
+    document.addEventListener('dragstart', e => {
+        // If drag originates from a sortable item, mark it so we skip the overlay
+        if (e.target.closest('.sortable-item')) {
+            window._isSortableDrag = true;
+        }
+    });
+
+    document.addEventListener('dragend', () => {
+        window._isSortableDrag = false;
+    });
+
     document.addEventListener('dragenter', e => {
         e.preventDefault();
+        // Skip overlay for internal sortable reorder drags
+        if (window._isSortableDrag) return;
         dragCounter++;
         overlay.classList.remove('hidden');
     });
 
     document.addEventListener('dragleave', e => {
         e.preventDefault();
+        if (window._isSortableDrag) return;
         dragCounter--;
         if (dragCounter <= 0) {
             dragCounter = 0;
@@ -582,13 +619,18 @@ const Theme = {
 // ===== Splash Screen / Changelog Modal =====
 const SplashScreen = {
     _key: 'wdhj-splash-dismissed',
-    _version: 'v2.0',  // bump this when there are new updates to show
+    _version: 'v2.0.1',  // bump this when there are new updates to show
 
     init() {
         // Check if user previously chose "don't show again" for this version
         const dismissed = localStorage.getItem(this._key);
         if (dismissed === this._version) {
-            return; // User already dismissed this version
+            // Ensure overlay stays hidden (defensive, in case HTML missing `hidden` class)
+            const overlay = document.getElementById('splash-overlay');
+            if (overlay && !overlay.classList.contains('hidden')) {
+                overlay.classList.add('hidden');
+            }
+            return;
         }
 
         // Show splash after a short delay (let other UI settle)

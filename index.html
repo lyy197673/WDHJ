@@ -75,7 +75,7 @@
         <div id="toast-container" class="toast-container"></div>
 
         <!-- Splash Screen Modal -->
-        <div id="splash-overlay" class="splash-overlay">
+        <div id="splash-overlay" class="splash-overlay hidden">
             <div class="splash-backdrop"></div>
             <div class="splash-modal">
                 <div class="splash-glow"></div>
@@ -85,7 +85,7 @@
                         更新日志
                     </div>
                     <h2 class="splash-title">文档工具合集</h2>
-                    <p class="splash-version">v2.0 · 2026年6月更新</p>
+                    <p class="splash-version">v2.0 · 2026年6月11日更新</p>
                 </div>
                 <div class="splash-body">
                     <div class="splash-section">
@@ -118,9 +118,23 @@
                     </div>
                     <div class="splash-section">
                         <h4 class="splash-section-title">
-                            <span class="splash-section-icon">🔧</span> 问题修复与优化
+                            <span class="splash-section-icon">🔧</span> 问题修复
                         </h4>
                         <ul class="splash-list">
+                            <li>
+                                <span class="splash-tag fix">修复</span>
+                                <div class="splash-item-content">
+                                    <strong>拼图工具图片顺序无法拖拽排列</strong>
+                                    <p>修复了HTML5拖拽排序因缺少 setData() 调用导致浏览器无法发起拖拽的问题；修复了全局拖拽上传覆盖层遮挡排序区域导致拖拽失效的问题。</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="splash-tag fix">修复</span>
+                                <div class="splash-item-content">
+                                    <strong>开屏更新日志弹窗无法关闭</strong>
+                                    <p>修复了弹窗初始缺少隐藏类导致始终可见的问题；修复了已关闭用户再次访问时关闭按钮无响应的问题。</p>
+                                </div>
+                            </li>
                             <li>
                                 <span class="splash-tag fix">修复</span>
                                 <div class="splash-item-content">
@@ -135,6 +149,20 @@
                                     <p>修复了PPT导出时中文字体缺失问题，优化了图片在PPT中的排版布局。</p>
                                 </div>
                             </li>
+                        </ul>
+                    </div>
+                    <div class="splash-section">
+                        <h4 class="splash-section-title">
+                            <span class="splash-section-icon">⚡</span> 优化改进
+                        </h4>
+                        <ul class="splash-list">
+                            <li>
+                                <span class="splash-tag improve">优化</span>
+                                <div class="splash-item-content">
+                                    <strong>拖拽排序体验优化</strong>
+                                    <p>使用 AbortController 管理事件监听器生命周期，避免重复绑定导致性能下降；优化拖拽视觉反馈，增加半透明缩放效果。</p>
+                                </div>
+                            </li>
                             <li>
                                 <span class="splash-tag improve">优化</span>
                                 <div class="splash-item-content">
@@ -146,7 +174,7 @@
                                 <span class="splash-tag improve">优化</span>
                                 <div class="splash-item-content">
                                     <strong>交互体验全面提升</strong>
-                                    <p>优化了文件拖拽反馈、页面切换动画、按钮悬停效果，增加了全局拖拽上传支持。</p>
+                                    <p>优化了文件拖拽反馈、页面切换动画、按钮悬停效果，增加了全局拖拽上传支持，内部排序与全局上传拖拽不再冲突。</p>
                                 </div>
                             </li>
                         </ul>
