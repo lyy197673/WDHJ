@@ -33,6 +33,7 @@ const Homepage = {
     },
 
     _loadHero() {
+        if (typeof HOMEPAGE_DATA !== 'undefined' && HOMEPAGE_DATA.hero) return HOMEPAGE_DATA.hero;
         try {
             const raw = localStorage.getItem('editor_hero');
             if (raw) return JSON.parse(raw);
@@ -41,6 +42,7 @@ const Homepage = {
     },
 
     _loadTools() {
+        if (typeof HOMEPAGE_DATA !== 'undefined' && HOMEPAGE_DATA.tools) return HOMEPAGE_DATA.tools;
         try {
             const raw = localStorage.getItem('editor_tools');
             if (raw) return JSON.parse(raw);
@@ -49,6 +51,14 @@ const Homepage = {
     },
 
     _loadSites() {
+        if (typeof HOMEPAGE_DATA !== 'undefined' && HOMEPAGE_DATA.hero) {
+            const defaultSites = this._getDefaultSites();
+            return {
+                title: defaultSites.title,
+                subtitle: defaultSites.subtitle,
+                categories: (typeof SITE_LINKS !== 'undefined') ? SITE_LINKS : defaultSites.categories
+            };
+        }
         try {
             const raw = localStorage.getItem('editor_sites');
             if (raw) return JSON.parse(raw);

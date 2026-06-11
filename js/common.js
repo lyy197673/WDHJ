@@ -640,9 +640,14 @@ const SplashScreen = {
 
     _loadFromStorage() {
         try {
-            const raw = localStorage.getItem('editor_changelog');
-            if (!raw) return null;
-            const data = JSON.parse(raw);
+            let data = null;
+            if (typeof HOMEPAGE_DATA !== 'undefined' && HOMEPAGE_DATA.changelog) {
+                data = HOMEPAGE_DATA.changelog;
+            } else {
+                const raw = localStorage.getItem('editor_changelog');
+                if (raw) data = JSON.parse(raw);
+            }
+            if (!data) return null;
             const modal = document.querySelector('.splash-modal');
             if (!modal) return data;
 

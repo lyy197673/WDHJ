@@ -184,6 +184,32 @@
         localStorage.setItem('editor_sites', JSON.stringify(sitesData));
     }
 
+    function saveToServer() {
+        const siteLinksContent = `// 推荐网站数据 — 由编辑器维护
+// 格式: [{ category: '分类名', icon: '🎨', items: [{ name: '站名', desc: '描述', url: 'https://...', icon: '🔗' }] }]
+const SITE_LINKS = ${JSON.stringify(sitesData.categories, null, 4)};
+`;
+        const homepageDataContent = `// 首页数据 — 由编辑器导出，请勿手动编辑
+const HOMEPAGE_DATA = {
+    hero: ${JSON.stringify(heroData, null, 4)},
+    tools: ${JSON.stringify(toolsData, null, 4)},
+    changelog: ${JSON.stringify(changelogData, null, 4)}
+};
+`;
+        return Promise.all([
+            fetch('/api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filePath: 'js/site-links.js', content: siteLinksContent })
+            }),
+            fetch('/api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filePath: 'js/homepage-data.js', content: homepageDataContent })
+            })
+        ]).then(([r1, r2]) => r1.ok && r2.ok).catch(() => false);
+    }
+
     function loadFromStorage() {
         try {
             const c = localStorage.getItem('editor_changelog');
@@ -212,28 +238,32 @@
 
     // ---- Save Button ----
     function bindSaveBtn() {
-        document.getElementById('editor-save-btn').onclick = () => {
-            // Auto-generate version: v{month}.{day}.{hours}
-            const now = new Date();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const version = `v${month}.${day}.${hours}`;
-            changelogData.version = version;
-
-            // Auto-generate date
-            const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-            changelogData.date = `${now.getFullYear()}年${monthNames[now.getMonth()]}${now.getDate()}日`;
-
-            // Update the input fields
-            const versionInput = document.getElementById('changelog-version');
-            const dateInput = document.getElementById('changelog-date');
-            if (versionInput) versionInput.value = version;
-            if (dateInput) dateInput.value = changelogData.date;
-
+        document.getElementById('editor-save-btn').onclick = async () => {
+            autoGenVersionDate();
             saveToStorage();
-            showToast('保存成功');
+            const ok = await saveToServer();
+            if (ok) {
+                showToast('保存成功，文件已更新，可直接提交到 GitHub');
+            } else {
+                showToast('已保存到本地（服务器未运行，文件未更新）');
+            }
         };
+    }
+
+    function autoGenVersionDate() {
+        const now = new Date();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        changelogData.version = `v${month}.${day}.${hours}`;
+
+        const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+        changelogData.date = `${now.getFullYear()}年${monthNames[now.getMonth()]}${now.getDate()}日`;
+
+        const versionInput = document.getElementById('changelog-version');
+        const dateInput = document.getElementById('changelog-date');
+        if (versionInput) versionInput.value = changelogData.version;
+        if (dateInput) dateInput.value = changelogData.date;
     }
 
     // ---- Changelog Editor ----
