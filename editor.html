@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页编辑器 - 文档工具合集</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/editor.css">
+</head>
+<body data-theme="dark">
+    <div class="editor-app">
+        <div class="editor-body">
+            <div class="editor-container">
+                <div class="editor-container-title">首页编辑器</div>
+                <div class="editor-container-body">
+                <nav class="editor-sidebar">
+                    <button class="editor-nav-item active" data-section="changelog">
+                        <span class="editor-nav-icon">📋</span> 更新日志
+                    </button>
+                    <button class="editor-nav-item" data-section="hero">
+                        <span class="editor-nav-icon">🏠</span> 主标题区
+                    </button>
+                    <button class="editor-nav-item" data-section="tools">
+                        <span class="editor-nav-icon">🧰</span> 工具卡片
+                    </button>
+                    <button class="editor-nav-item" data-section="sites">
+                        <span class="editor-nav-icon">🔗</span> 推荐网站
+                    </button>
+                </nav>
+
+                <main class="editor-main" id="editor-main">
+                    <div class="editor-section active" data-section="changelog">
+                        <div class="editor-section-header">
+                            <h3>更新日志</h3>
+                            <p>编辑开屏弹窗的更新日志内容</p>
+                        </div>
+                        <div class="editor-form">
+                            <div class="editor-field">
+                                <label>版本号</label>
+                                <input type="text" id="changelog-version" class="editor-input" placeholder="v2.1">
+                            </div>
+                            <div class="editor-field">
+                                <label>更新日期</label>
+                                <input type="text" id="changelog-date" class="editor-input" placeholder="2026年6月11日">
+                            </div>
+                            <div id="changelog-sections-list" class="editor-card-list"></div>
+                            <button class="btn btn-sm btn-dashed" id="changelog-section-add">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                添加日志分类
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="editor-section" data-section="hero">
+                        <div class="editor-section-header">
+                            <h3>主标题区</h3>
+                            <p>编辑首页顶部的标题、副标题和徽章</p>
+                        </div>
+                        <div class="editor-form">
+                            <div class="editor-field">
+                                <label>主标题</label>
+                                <input type="text" id="hero-title" class="editor-input" placeholder="文档工具箱">
+                            </div>
+                            <div class="editor-field">
+                                <label>副标题</label>
+                                <textarea id="hero-desc" class="editor-input" rows="2" placeholder="纯本地浏览器处理文档..."></textarea>
+                            </div>
+                            <div class="editor-field">
+                                <label>徽章 <button class="btn btn-xs" id="hero-badge-add">+ 添加</button></label>
+                                <div id="hero-badges" class="editor-tag-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editor-section" data-section="tools">
+                        <div class="editor-section-header">
+                            <h3>工具卡片</h3>
+                            <p>管理首页展示的工具卡片</p>
+                        </div>
+                        <div class="editor-form">
+                            <div id="tools-list" class="editor-card-list"></div>
+                            <button class="btn btn-sm btn-dashed" id="tool-add-btn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                添加工具卡片
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="editor-section" data-section="sites">
+                        <div class="editor-section-header">
+                            <h3>推荐网站</h3>
+                            <p>管理首页推荐网站的分类和链接</p>
+                        </div>
+                        <div class="editor-form">
+                            <div class="editor-field">
+                                <label>板块标题</label>
+                                <input type="text" id="sites-title" class="editor-input" placeholder="推荐网站">
+                            </div>
+                            <div class="editor-field">
+                                <label>板块副标题</label>
+                                <input type="text" id="sites-subtitle" class="editor-input" placeholder="一些站长在用的宝藏网站...">
+                            </div>
+                            <div id="sites-list" class="editor-card-list"></div>
+                            <button class="btn btn-sm btn-dashed" id="site-cat-add-btn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                添加分类
+                            </button>
+                        </div>
+                    </div>
+                </main>
+                </div>
+
+                <button class="editor-save-fab" id="editor-save-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    保存到本地
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/site-links.js"></script>
+    <script src="js/homepage-editor.js"></script>
+</body>
+</html>

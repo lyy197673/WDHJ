@@ -1,58 +1,85 @@
 // ===== Homepage Module =====
 
 const Homepage = {
+    _getDefaultHero() {
+        return {
+            title: '文档工具箱',
+            desc: '纯本地浏览器处理文档，隐私安全，快速便捷。无广告、全免费，上传不限速、下载不卡顿',
+            badges: [
+                { icon: '🔒', text: '本地处理' },
+                { icon: '⚡', text: '高效快捷' },
+                { icon: '🎯', text: '极速构建' },
+                { icon: '📱', text: '多端适配' },
+            ]
+        };
+    },
+
+    _getDefaultTools() {
+        return [
+            { id: 'image', icon: '🖼️', iconClass: 'image', title: '图片工具', desc: '拼图 · 裁剪 · 压缩 · 转换 · 像素调整 · 水印添加', route: '#/image' },
+            { id: 'pdf', icon: '📄', iconClass: 'pdf', title: 'PDF工具', desc: '转换 · 拆分 · 合并 · 压缩', route: '#/pdf' },
+            { id: 'ppt', icon: '📊', iconClass: 'ppt', title: 'PPT工具', desc: '拆分 · 转换 · 压缩', route: '#/ppt' },
+            { id: 'stamp', icon: '🔏', iconClass: 'stamp', title: '盖章工具', desc: '自定义印章 · 图片/PDF盖章 · 混合模式 · 批量导出', route: '#/stamp' },
+            { id: 'fbx-viewer', icon: '🧊', iconClass: 'fbx', title: 'FBX查看器', desc: '3D模型预览 · 部件编辑 · 动画播放 · 截图导出', route: '#/fbx-viewer' },
+        ];
+    },
+
+    _getDefaultSites() {
+        return {
+            title: '推荐网站',
+            subtitle: '一些站长在用的宝藏网站，纯免费，放心使用',
+            categories: (typeof SITE_LINKS !== 'undefined') ? SITE_LINKS : []
+        };
+    },
+
+    _loadHero() {
+        try {
+            const raw = localStorage.getItem('editor_hero');
+            if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return this._getDefaultHero();
+    },
+
+    _loadTools() {
+        try {
+            const raw = localStorage.getItem('editor_tools');
+            if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return this._getDefaultTools();
+    },
+
+    _loadSites() {
+        try {
+            const raw = localStorage.getItem('editor_sites');
+            if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return this._getDefaultSites();
+    },
+
+    _loadAnnounce() {
+        return null;
+    },
+
     render(container) {
+        const hero = this._loadHero();
+        const tools = this._loadTools();
+        const sites = this._loadSites();
+
+        const badgesHtml = hero.badges.map(b =>
+            `<span class="badge">${b.icon} ${b.text}</span>`
+        ).join('');
+
         container.innerHTML = `
             <div class="homepage-hero">
-                <h2>文档工具箱</h2>
-                <p>纯本地浏览器处理文档，隐私安全，快速便捷。无广告、全免费，上传不限速、下载不卡顿</p>
-                <div class="homepage-badges">
-                    <span class="badge">🔒 本地处理</span>
-                    <span class="badge">⚡ 高效快捷</span>
-                    <span class="badge">🎯 极速构建</span>
-                    <span class="badge">📱 多端适配</span>
-                </div>
+                <h2>${hero.title}</h2>
+                <p>${hero.desc}</p>
+                <div class="homepage-badges">${badgesHtml}</div>
             </div>
             <div class="tool-grid" id="tool-grid"></div>
+            <div id="site-links-section"></div>
         `;
 
         const grid = document.getElementById('tool-grid');
-        const tools = [
-            {
-                id: 'image',
-                icon: '🖼️',
-                iconClass: 'image',
-                title: '图片工具',
-                desc: '拼图 · 裁剪 · 压缩 · 转换 · 像素调整 · 水印添加',
-                route: '#/image'
-            },
-            {
-                id: 'pdf',
-                icon: '📄',
-                iconClass: 'pdf',
-                title: 'PDF工具',
-                desc: '转换 · 拆分 · 合并 · 压缩',
-                route: '#/pdf'
-            },
-            {
-                id: 'ppt',
-                icon: '📊',
-                iconClass: 'ppt',
-                title: 'PPT工具',
-                desc: '拆分 · 转换 · 压缩',
-                route: '#/ppt'
-            },
-            {
-                id: 'fbx-viewer',
-                icon: '🧊',
-                iconClass: 'fbx',
-                title: 'FBX查看器',
-                desc: '3D模型预览 · 部件编辑 · 动画播放 · 截图导出',
-                route: '#/fbx-viewer'
-            },
-
-        ];
-
         tools.forEach(tool => {
             const card = document.createElement('div');
             card.className = 'tool-card';
@@ -67,5 +94,39 @@ const Homepage = {
             `;
             grid.appendChild(card);
         });
+
+        // Render recommended sites
+        if (sites.categories && sites.categories.length) {
+            this._renderSiteLinks(document.getElementById('site-links-section'), sites);
+        }
+    },
+
+    _renderSiteLinks(container, sites) {
+        let html = `<div class="site-links-section"><h3 class="site-links-title">${sites.title}</h3><p class="site-links-subtitle">${sites.subtitle}</p>`;
+
+        sites.categories.forEach(group => {
+            html += `
+                <div class="site-links-group">
+                    <h4 class="site-links-group-title">${group.icon} ${group.category}</h4>
+                    <div class="site-links-grid">
+            `;
+            group.items.forEach(item => {
+                html += `
+                    <a class="site-link-card" href="${item.url}" target="_blank" rel="noopener noreferrer">
+                        <div class="site-link-tooltip">${item.desc}</div>
+                        <span class="site-link-icon">${item.icon || '🔗'}</span>
+                        <div class="site-link-info">
+                            <span class="site-link-name">${item.name}</span>
+                            <span class="site-link-desc">${item.desc}</span>
+                        </div>
+                        <svg class="site-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+                    </a>
+                `;
+            });
+            html += '</div></div>';
+        });
+
+        html += '</div>';
+        container.innerHTML = html;
     }
 };

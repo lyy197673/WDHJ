@@ -478,8 +478,8 @@ function initGlobalDragDrop() {
     window._isSortableDrag = false;
 
     document.addEventListener('dragstart', e => {
-        // If drag originates from a sortable item, mark it so we skip the overlay
-        if (e.target.closest('.sortable-item')) {
+        // If drag originates from a sortable item or stamp library, mark it so we skip the overlay
+        if (e.target.closest('.sortable-item') || e.target.closest('.stamp-lib-item')) {
             window._isSortableDrag = true;
         }
     });
@@ -619,13 +619,14 @@ const Theme = {
 // ===== Splash Screen / Changelog Modal =====
 const SplashScreen = {
     _key: 'wdhj-splash-dismissed',
-    _version: 'v2.0.1',  // bump this when there are new updates to show
 
     init() {
+        const data = this._loadFromStorage();
+        const version = (data && data.version) ? data.version : 'v2.1';
+
         // Check if user previously chose "don't show again" for this version
         const dismissed = localStorage.getItem(this._key);
-        if (dismissed === this._version) {
-            // Ensure overlay stays hidden (defensive, in case HTML missing `hidden` class)
+        if (dismissed === version) {
             const overlay = document.getElementById('splash-overlay');
             if (overlay && !overlay.classList.contains('hidden')) {
                 overlay.classList.add('hidden');
@@ -633,8 +634,49 @@ const SplashScreen = {
             return;
         }
 
-        // Show splash after a short delay (let other UI settle)
+        this._currentVersion = version;
         setTimeout(() => this._show(), 300);
+    },
+
+    _loadFromStorage() {
+        try {
+            const raw = localStorage.getItem('editor_changelog');
+            if (!raw) return null;
+            const data = JSON.parse(raw);
+            const modal = document.querySelector('.splash-modal');
+            if (!modal) return data;
+
+            // Update version
+            const versionEl = modal.querySelector('.splash-version');
+            if (versionEl && data.version) {
+                versionEl.textContent = `${data.version} · ${data.date || ''}更新`;
+            }
+
+            // Update body
+            const body = modal.querySelector('.splash-body');
+            if (body && data.sections && data.sections.length) {
+                const typeMap = { new: 'new', fix: 'fix', improve: 'improve' };
+                body.innerHTML = data.sections.map(sec => `
+                    <div class="splash-section">
+                        <h4 class="splash-section-title">
+                            <span class="splash-section-icon">${sec.icon}</span> ${sec.title}
+                        </h4>
+                        <ul class="splash-list">
+                            ${sec.items.map(item => `
+                                <li>
+                                    <span class="splash-tag ${typeMap[sec.type] || 'new'}">${sec.type === 'fix' ? '修复' : sec.type === 'improve' ? '优化' : '新'}</span>
+                                    <div class="splash-item-content">
+                                        <strong>${item.title}</strong>
+                                        <p>${item.desc}</p>
+                                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('');
+            }
+            return data;
+        } catch (e) { return null; }
     },
 
     _show() {
@@ -649,7 +691,7 @@ const SplashScreen = {
 
         const close = () => {
             if (checkbox && checkbox.checked) {
-                localStorage.setItem(this._key, this._version);
+                localStorage.setItem(this._key, this._currentVersion);
             }
 
             overlay.classList.add('closing');

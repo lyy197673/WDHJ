@@ -62,6 +62,9 @@ const App = {
             case 'ppt':
                 PPTTools.render(content, sub || 'split');
                 break;
+            case 'stamp':
+                StampTools.render(content, sub || '');
+                break;
             case 'fbx-viewer':
                 await this._loadFBXViewer(content, sub || '');
                 break;

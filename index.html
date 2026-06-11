@@ -85,7 +85,7 @@
                         更新日志
                     </div>
                     <h2 class="splash-title">文档工具合集</h2>
-                    <p class="splash-version">v2.0 · 2026年6月11日更新</p>
+                    <p class="splash-version">v2.1 · 2026年6月11日更新</p>
                 </div>
                 <div class="splash-body">
                     <div class="splash-section">
@@ -96,22 +96,15 @@
                             <li>
                                 <span class="splash-tag new">新</span>
                                 <div class="splash-item-content">
-                                    <strong>FBX 3D模型查看器</strong>
-                                    <p>支持导入FBX格式的3D模型，提供旋转、缩放、平移等交互式预览，支持线框/实体/材质多种渲染模式，模型层级结构浏览与属性编辑。</p>
+                                    <strong>盖章工具</strong>
+                                    <p>支持导入自定义印章图片，在图片或 PDF 上自由放置印章。支持拖拽移动、旋转缩放、6 种混合模式（正片叠底、叠加等）、透明度调节，PDF 支持多页批量盖章，导出前可自定义文件名。</p>
                                 </div>
                             </li>
                             <li>
                                 <span class="splash-tag new">新</span>
                                 <div class="splash-item-content">
-                                    <strong>图片批量处理</strong>
-                                    <p>支持批量调整尺寸、转换格式、压缩图片，一键应用到所有选中文件，大幅提升工作效率。</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="splash-tag new">新</span>
-                                <div class="splash-item-content">
-                                    <strong>图片水印功能</strong>
-                                    <p>支持文字水印和图片水印，可自定义位置、透明度、大小，批量添加水印保护您的图片版权。</p>
+                                    <strong>推荐网站</strong>
+                                    <p>首页新增「推荐网站」板块，收录实用工具、AI 工具、设计资源、开发资源等常用站点，方便快速访问。</p>
                                 </div>
                             </li>
                         </ul>
@@ -124,29 +117,15 @@
                             <li>
                                 <span class="splash-tag fix">修复</span>
                                 <div class="splash-item-content">
-                                    <strong>拼图工具图片顺序无法拖拽排列</strong>
-                                    <p>修复了HTML5拖拽排序因缺少 setData() 调用导致浏览器无法发起拖拽的问题；修复了全局拖拽上传覆盖层遮挡排序区域导致拖拽失效的问题。</p>
+                                    <strong>盖章工具印章拖拽失效</strong>
+                                    <p>修复了从印章库拖拽印章到画布时被全局拖放覆盖层拦截的问题，现在拖放放置正常工作。</p>
                                 </div>
                             </li>
                             <li>
                                 <span class="splash-tag fix">修复</span>
                                 <div class="splash-item-content">
-                                    <strong>开屏更新日志弹窗无法关闭</strong>
-                                    <p>修复了弹窗初始缺少隐藏类导致始终可见的问题；修复了已关闭用户再次访问时关闭按钮无响应的问题。</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="splash-tag fix">修复</span>
-                                <div class="splash-item-content">
-                                    <strong>PDF工具稳定性修复</strong>
-                                    <p>修复了PDF合并时大文件内存溢出问题，优化了分页渲染性能，修复了部分PDF页面提取异常。</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="splash-tag fix">修复</span>
-                                <div class="splash-item-content">
-                                    <strong>PPT导出兼容性优化</strong>
-                                    <p>修复了PPT导出时中文字体缺失问题，优化了图片在PPT中的排版布局。</p>
+                                    <strong>印章库刷新丢失</strong>
+                                    <p>修复了导入的印章在页面刷新后消失的问题，印章现在通过 localStorage 持久化存储，刷新不丢失。</p>
                                 </div>
                             </li>
                         </ul>
@@ -159,22 +138,15 @@
                             <li>
                                 <span class="splash-tag improve">优化</span>
                                 <div class="splash-item-content">
-                                    <strong>拖拽排序体验优化</strong>
-                                    <p>使用 AbortController 管理事件监听器生命周期，避免重复绑定导致性能下降；优化拖拽视觉反馈，增加半透明缩放效果。</p>
+                                    <strong>画布缩放体验</strong>
+                                    <p>画布缩放改为 CSS Transform 架构，保留原始分辨率。支持鼠标滚轮以光标为中心缩放、工具栏一键适应窗口/1:1 重置、空白区域拖拽平移。</p>
                                 </div>
                             </li>
                             <li>
                                 <span class="splash-tag improve">优化</span>
                                 <div class="splash-item-content">
-                                    <strong>暗色/亮色主题切换</strong>
-                                    <p>完善了全局主题切换动画，修复了部分组件在亮色主题下显示异常的问题，过渡更加流畅自然。</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="splash-tag improve">优化</span>
-                                <div class="splash-item-content">
-                                    <strong>交互体验全面提升</strong>
-                                    <p>优化了文件拖拽反馈、页面切换动画、按钮悬停效果，增加了全局拖拽上传支持，内部排序与全局上传拖拽不再冲突。</p>
+                                    <strong>导出格式自由选择</strong>
+                                    <p>无论底图是图片还是 PDF，导出时均可自由选择 PNG / JPG / PDF 三种格式，不再受限于输入类型。</p>
                                 </div>
                             </li>
                         </ul>
@@ -212,7 +184,8 @@
     <script src="js/image-tools.js"></script>
     <script src="js/pdf-tools.js"></script>
     <script src="js/ppt-tools.js"></script>
-
+    <script src="js/stamp-tools.js"></script>
+    <script src="js/site-links.js"></script>
 
     <script src="js/fbx-viewer.js"></script>
     <script src="js/app.js"></script>
