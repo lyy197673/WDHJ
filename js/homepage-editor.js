@@ -71,6 +71,14 @@
             const wasOpen = dropdown.classList.contains('open');
             document.querySelectorAll('.icon-picker-dropdown').forEach(d => d.classList.remove('open'));
             if (!wasOpen) {
+                const rect = btn.getBoundingClientRect();
+                let top = rect.bottom + 6;
+                let left = rect.left;
+                if (left + 320 > window.innerWidth) left = window.innerWidth - 330;
+                if (left < 10) left = 10;
+                if (top + 260 > window.innerHeight) top = rect.top - 266;
+                dropdown.style.top = top + 'px';
+                dropdown.style.left = left + 'px';
                 dropdown.classList.add('open');
                 search.value = '';
                 renderGrid('');
@@ -165,6 +173,66 @@
         });
     }
 
+    // ---- Server Status ----
+    let _serverConnected = false;
+    let _disconnectOverlay = null;
+
+    function setStatus(state, text) {
+        const bar = document.getElementById('editor-status-bar');
+        const label = document.getElementById('editor-status-text');
+        if (!bar) return;
+        bar.className = 'editor-status-bar ' + state;
+        label.textContent = text;
+    }
+
+    function showDisconnectOverlay() {
+        if (_disconnectOverlay) return;
+        _disconnectOverlay = document.createElement('div');
+        _disconnectOverlay.className = 'editor-disconnect-overlay';
+        _disconnectOverlay.innerHTML = `
+            <div class="editor-disconnect-card">
+                <div class="editor-disconnect-icon">⚠️</div>
+                <div class="editor-disconnect-title">服务器未连接</div>
+                <div class="editor-disconnect-desc">请先启动保存服务器，编辑器才能正常保存文件。</div>
+                <div class="editor-disconnect-cmd">
+                    <code>node save-server.js</code>
+                </div>
+                <div class="editor-disconnect-hint">启动后将自动检测并关闭此提示</div>
+                <div class="editor-disconnect-spinner"></div>
+            </div>
+        `;
+        document.body.appendChild(_disconnectOverlay);
+    }
+
+    function hideDisconnectOverlay() {
+        if (_disconnectOverlay) {
+            _disconnectOverlay.classList.add('hiding');
+            setTimeout(() => {
+                _disconnectOverlay?.remove();
+                _disconnectOverlay = null;
+            }, 400);
+        }
+    }
+
+    function checkServerConnection() {
+        fetch('/editor.html', { method: 'HEAD', cache: 'no-store' }).then(r => {
+            if (!_serverConnected) {
+                _serverConnected = true;
+                setStatus('connected', '服务器已连接');
+                hideDisconnectOverlay();
+            }
+        }).catch(() => {
+            if (_serverConnected) {
+                _serverConnected = false;
+                setStatus('disconnected', '服务器未运行');
+                showDisconnectOverlay();
+            } else if (document.getElementById('editor-status-text')?.textContent === '检查中...') {
+                setStatus('disconnected', '服务器未运行');
+                showDisconnectOverlay();
+            }
+        });
+    }
+
     // ---- Init ----
     document.addEventListener('DOMContentLoaded', () => {
         loadFromStorage();
@@ -174,6 +242,8 @@
         renderSites();
         bindNav();
         bindSaveBtn();
+        checkServerConnection();
+        setInterval(checkServerConnection, 8000);
     });
 
     // ---- Persistence ----
@@ -239,13 +309,21 @@ const HOMEPAGE_DATA = {
     // ---- Save Button ----
     function bindSaveBtn() {
         document.getElementById('editor-save-btn').onclick = async () => {
+            if (!_serverConnected) {
+                showDisconnectOverlay();
+                return;
+            }
             autoGenVersionDate();
             saveToStorage();
+            setStatus('saving', '保存中...');
             const ok = await saveToServer();
             if (ok) {
+                setStatus('connected', '服务器已连接');
                 showToast('保存成功，文件已更新，可直接提交到 GitHub');
             } else {
-                showToast('已保存到本地（服务器未运行，文件未更新）');
+                setStatus('disconnected', '服务器未运行');
+                showDisconnectOverlay();
+                showToast('保存失败，服务器异常');
             }
         };
     }

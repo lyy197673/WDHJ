@@ -65,8 +65,8 @@ const HOMEPAGE_DATA = {
     }
 ],
     changelog: {
-    "version": "v06.11.23",
-    "date": "2026年6月11日",
+    "version": "v06.12.09",
+    "date": "2026年6月12日",
     "sections": [
         {
             "icon": "✨",
@@ -79,7 +79,7 @@ const HOMEPAGE_DATA = {
                 },
                 {
                     "title": "推荐网站",
-                    "desc": "首页新增「推荐网站」板块，收录了一些站长平时常用的小网站，纯免费"
+                    "desc": "首页新增「推荐网站」板块，收录了一些站长自用的实用小网站，纯免费，放心用"
                 }
             ]
         },
@@ -89,8 +89,8 @@ const HOMEPAGE_DATA = {
             "type": "fix",
             "items": [
                 {
-                    "title": "bug",
-                    "desc": "修复了一些已知问题"
+                    "title": "拖拽放置文件失效",
+                    "desc": "已修复所有无法正常拖放文件的bug，现在可正常使用"
                 }
             ]
         }

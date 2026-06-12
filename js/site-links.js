@@ -3,7 +3,7 @@
 const SITE_LINKS = [
     {
         "category": "实用工具",
-        "icon": "📂",
+        "icon": "📌",
         "items": [
             {
                 "name": "aix下载器",
@@ -12,10 +12,22 @@ const SITE_LINKS = [
                 "icon": "⬇️"
             },
             {
-                "name": "Remove.bg",
-                "desc": "AI 自动抠图，一键去除背景",
-                "url": "https://www.remove.bg/zh",
-                "icon": "✂️"
+                "name": "抠图网",
+                "desc": "上传图片自动识别主体，一键扣白底图",
+                "url": "https://www.koukoutu.com/",
+                "icon": "🦊"
+            },
+            {
+                "name": "视频解析",
+                "desc": "各大平台的视频图片解析，无水印下载",
+                "url": "https://www.idaohang123.com/",
+                "icon": "🌐"
+            },
+            {
+                "name": "微信对话生成器",
+                "desc": "在线生成微信对话、微信账单、微信零钱等界面截图，界面设置高度自由，真假难辨",
+                "url": "https://vjietu.pro/",
+                "icon": "🎲"
             }
         ]
     },
@@ -40,6 +52,24 @@ const SITE_LINKS = [
                 "desc": "高质量免费图片素材，商用无忧",
                 "url": "https://unsplash.com/",
                 "icon": "📷"
+            },
+            {
+                "name": "字体天下",
+                "desc": "免费可商用字体下载",
+                "url": "https://www.fonts.net.cn/commercial-free/fonts-zh-4.html",
+                "icon": "🖌️"
+            }
+        ]
+    },
+    {
+        "category": "免费电影",
+        "icon": "🎬",
+        "items": [
+            {
+                "name": "奈飞工厂",
+                "desc": "最新欧美日韩剧免费看，蓝光画质，无广告",
+                "url": "https://www.netflixgc.tv/",
+                "icon": "🚀"
             }
         ]
     }
