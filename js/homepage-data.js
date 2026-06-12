@@ -62,10 +62,18 @@ const HOMEPAGE_DATA = {
         "title": "FBX查看器",
         "desc": "3D模型预览 · 部件编辑 · 动画播放 · 截图导出",
         "route": "#/fbx-viewer"
+    },
+    {
+        "id": "new-tool-1781236293848",
+        "icon": "📋",
+        "iconClass": "文档",
+        "title": "word工具",
+        "desc": "开发中.....敬请期待",
+        "route": "#/new"
     }
 ],
     changelog: {
-    "version": "v06.12.09",
+    "version": "v06.12.11",
     "date": "2026年6月12日",
     "sections": [
         {
