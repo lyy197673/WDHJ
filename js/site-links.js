@@ -72,5 +72,35 @@ const SITE_LINKS = [
                 "icon": "🚀"
             }
         ]
+    },
+    {
+        "category": "游戏资源",
+        "icon": "🎮",
+        "items": [
+            {
+                "name": "蒸汽游戏",
+                "desc": "网站涵盖最新最热手机，平板，电脑三端游戏资源，免费下载，免费开完",
+                "url": "https://www.steambk.com/",
+                "icon": "🖥️"
+            }
+        ]
+    },
+    {
+        "category": "小说资源",
+        "icon": "🗺️",
+        "items": [
+            {
+                "name": "365小说",
+                "desc": "热门小说全本txt免费下载",
+                "url": "http://www.shukuge.com/",
+                "icon": "📋"
+            },
+            {
+                "name": "知轩藏书",
+                "desc": "热门小说全本txt免费下载",
+                "url": "https://zxcs.zip/",
+                "icon": "📱"
+            }
+        ]
     }
 ];
