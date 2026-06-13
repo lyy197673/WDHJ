@@ -28,6 +28,12 @@ const SITE_LINKS = [
                 "desc": "在线生成微信对话、微信账单、微信零钱等界面截图，界面设置高度自由，真假难辨",
                 "url": "https://vjietu.pro/",
                 "icon": "🎲"
+            },
+            {
+                "name": "PDF24",
+                "desc": "非常强大且全能的pdf处理工具，完全免费，但有时下载速度会有点慢",
+                "url": "https://tools.pdf24.org/zh/",
+                "icon": "🔗"
             }
         ]
     },
@@ -36,19 +42,19 @@ const SITE_LINKS = [
         "icon": "🎨",
         "items": [
             {
-                "name": "Dribbble",
+                "name": "设计师灵感",
                 "desc": "设计师作品展示平台，灵感来源",
                 "url": "https://dribbble.com/",
                 "icon": "🏀"
             },
             {
-                "name": "IconFont",
+                "name": "图标插画库",
                 "desc": "阿里巴巴矢量图标库，海量免费图标",
                 "url": "https://www.iconfont.cn/",
                 "icon": "🎯"
             },
             {
-                "name": "Unsplash",
+                "name": "图片素材库",
                 "desc": "高质量免费图片素材，商用无忧",
                 "url": "https://unsplash.com/",
                 "icon": "📷"
