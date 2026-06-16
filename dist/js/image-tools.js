@@ -2626,10 +2626,10 @@ const ImageTools = {
             watermarkImg: null, watermarkImgDataUrl: null, imageOpacity: 0.5,
             mode: 'single',
             // Ratios (0-1) relative to image dimensions — shared across all previews
-            wmRatioX: 0.375, wmRatioY: 0.375, wmRatioW: 0.25, wmRatioH: 0.25,
+            wmRatioX: 0.5, wmRatioY: 0.5, wmRatioW: 0.25, wmRatioH: 0.25,
             tileSpacing: 150, tileAngle: -30, tileScale: 0.12,
             dragging: false, resizing: false, resizeHandle: '',
-            dragStart: { x: 0, y: 0 }, wmStartRatio: { x: 0.375, y: 0.375, w: 0.25, h: 0.25 },
+            dragStart: { x: 0, y: 0 }, wmStartRatio: { x: 0.5, y: 0.5, w: 0.25, h: 0.25 },
             previewCanvases: []  // { id, canvas, img, naturalW, naturalH }
         };
 
@@ -2679,7 +2679,7 @@ const ImageTools = {
                         </div>
                         <div class="control-group">
                             <label>字号: <span id="wm-font-size-val">48</span>px</label>
-                            <input type="range" id="wm-font-size" min="12" max="300" value="48">
+                            <input type="range" id="wm-font-size" min="5" max="300" value="48">
                         </div>
                         <div class="control-group">
                             <label>粗细</label>
@@ -2829,16 +2829,60 @@ const ImageTools = {
         }
 
         // Get wm box in canvas-pixel coords for a given canvas
+        // ---- Text dimension helpers ----
+        function textLineHeight(fs) { return fs * 1.4; }
+
+        function wrapTextLines(ctx, text, maxWidth, fs, fontWeight, fontFamily, letterSpacing) {
+            if (!text) return [];
+            ctx.save();
+            ctx.font = `${fontWeight} ${fs}px "${fontFamily}", sans-serif`;
+            const lines = [];
+            let currentLine = '';
+            for (const ch of [...text]) {
+                const testLine = currentLine + ch;
+                const tw = ctx.measureText(testLine).width + (testLine.length - 1) * letterSpacing;
+                if (tw > maxWidth && currentLine) {
+                    lines.push(currentLine);
+                    currentLine = ch;
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            if (currentLine) lines.push(currentLine);
+            ctx.restore();
+            return lines;
+        }
+
         function wmBoxFor(cv) {
+            const centerX = state.wmRatioX * cv.width;
+            const centerY = state.wmRatioY * cv.height;
+            if (state.watermarkType === 'text' && state.text) {
+                const fs = Math.max(5, state.fontSize * (cv.width / 500));
+                const ls = state.letterSpacing * (cv.width / 500);
+                const ctx = cv.getContext('2d');
+                ctx.save();
+                ctx.font = `${state.fontWeight} ${fs}px "${state.fontFamily}", sans-serif`;
+                const textW = ctx.measureText(state.text).width + ([...state.text].length - 1) * ls;
+                ctx.restore();
+                const padding = fs * 0.6;
+                const boxW = textW + padding * 2;
+                const boxH = fs * 1.4 + padding * 2;
+                return {
+                    x: centerX - boxW / 2,
+                    y: centerY - boxH / 2,
+                    w: boxW,
+                    h: boxH,
+                    _fs: fs, _lh: fs * 1.4, _padding: padding
+                };
+            }
             return {
-                x: state.wmRatioX * cv.width,
-                y: state.wmRatioY * cv.height,
+                x: centerX - (state.wmRatioW * cv.width) / 2,
+                y: centerY - (state.wmRatioH * cv.height) / 2,
                 w: state.wmRatioW * cv.width,
                 h: state.wmRatioH * cv.height
             };
         }
 
-        // Set ratios from a box on a specific canvas
         function setRatiosFromBox(box, cv) {
             state.wmRatioX = (box.x + box.w / 2) / cv.width;
             state.wmRatioY = (box.y + box.h / 2) / cv.height;
@@ -2849,8 +2893,13 @@ const ImageTools = {
         function clampRatios() {
             state.wmRatioW = Utils.clamp(state.wmRatioW, 0.02, 1);
             state.wmRatioH = Utils.clamp(state.wmRatioH, 0.02, 1);
-            state.wmRatioX = Utils.clamp(state.wmRatioX, state.wmRatioW / 2, 1 - state.wmRatioW / 2);
-            state.wmRatioY = Utils.clamp(state.wmRatioY, state.wmRatioH / 2, 1 - state.wmRatioH / 2);
+            state.wmRatioX = Utils.clamp(state.wmRatioX, 0.01, 0.99);
+            state.wmRatioY = Utils.clamp(state.wmRatioY, 0.01, 0.99);
+        }
+
+        function syncFontSizeSlider() {
+            el.fontSizeSlider.value = state.fontSize;
+            el.fontSizeVal.textContent = state.fontSize;
         }
 
         // ---- Build preview canvases for all files ----
@@ -2902,7 +2951,6 @@ const ImageTools = {
             state.previewCanvases.forEach(pc => {
                 const cv = pc.canvas;
                 const ctx = cv.getContext('2d');
-                // Redraw image
                 ctx.clearRect(0, 0, cv.width, cv.height);
                 ctx.drawImage(pc.img, 0, 0, cv.width, cv.height);
 
@@ -2913,7 +2961,7 @@ const ImageTools = {
                 if (state.mode === 'single') {
                     const box = wmBoxFor(cv);
                     if (state.watermarkType === 'text') {
-                        drawTextWmOnCanvas(ctx, box.x, box.y, box.w, box.h, opacity, cv.width);
+                        drawTextWmOnCanvas(ctx, box, opacity);
                     } else {
                         drawImageWmOnCanvas(ctx, box.x, box.y, box.w, box.h, opacity);
                     }
@@ -2924,24 +2972,22 @@ const ImageTools = {
             });
         }
 
-        // ---- Drawing helpers (work with any canvas context) ----
-        function drawTextWmOnCanvas(ctx, x, y, w, h, opacity, canvasW) {
-            if (!state.text) return;
+        function drawTextWmOnCanvas(ctx, box, opacity) {
+            if (!state.text || !box._fs) return;
             ctx.save();
             ctx.globalAlpha = opacity;
             ctx.fillStyle = state.textColor;
-            const fs = Math.max(8, state.fontSize * (canvasW / 500));
-            ctx.font = `${state.fontWeight} ${fs}px "${state.fontFamily}", sans-serif`;
+            ctx.font = `${state.fontWeight} ${box._fs}px "${state.fontFamily}", sans-serif`;
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            const ls = state.letterSpacing * (canvasW / 500);
-            const cx = x + w / 2, cy = y + h / 2;
-            if (ls > 0 && state.text.length > 0) {
-                const chars = [...state.text];
-                const tw = chars.length * fs * 0.6 + (chars.length - 1) * ls;
-                let px = cx - tw / 2 + fs * 0.3;
-                chars.forEach(ch => { ctx.fillText(ch, px, cy); px += fs * 0.6 + ls; });
+            const ls = state.letterSpacing * (ctx.canvas.width / 500);
+            const chars = [...state.text];
+            const cy = box.y + box.h / 2;
+            if (ls > 0 && chars.length > 0) {
+                const tw = chars.length * box._fs * 0.6 + (chars.length - 1) * ls;
+                let px = box.x + box.w / 2 - tw / 2 + box._fs * 0.3;
+                chars.forEach(ch => { ctx.fillText(ch, px, cy); px += box._fs * 0.6 + ls; });
             } else {
-                ctx.fillText(state.text, cx, cy);
+                ctx.fillText(state.text, box.x + box.w / 2, cy);
             }
             ctx.restore();
         }
@@ -2990,7 +3036,7 @@ const ImageTools = {
                     ctx.save(); ctx.translate(cx, cy); ctx.rotate(angle); ctx.globalAlpha = opacity;
                     if (state.watermarkType === 'text') {
                         ctx.fillStyle = state.textColor;
-                        const fs = Math.max(8, state.fontSize * factor);
+                        const fs = Math.max(5, state.fontSize * factor);
                         ctx.font = `${state.fontWeight} ${fs}px "${state.fontFamily}", sans-serif`;
                         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                         const ls = state.letterSpacing * factor;
@@ -3037,21 +3083,27 @@ const ImageTools = {
             const cv = pc.canvas;
             const pos = canvasPos(e, cv);
             const box = wmBoxFor(cv);
-            const handle = hitHandle(cv, box, pos.x, pos.y);
 
-            if (handle) {
-                state.resizing = true; state.resizeHandle = handle;
-                state.dragStart = { x: pos.x, y: pos.y };
-                state.wmStartRatio = { x: state.wmRatioX, y: state.wmRatioY, w: state.wmRatioW, h: state.wmRatioH };
-                state._activeCanvas = cv;
-                cv.style.cursor = (handle === 'tl' || handle === 'br') ? 'nwse-resize' : 'nesw-resize';
-                e.preventDefault(); return;
+            if (state.watermarkType !== 'text') {
+                const handle = hitHandle(cv, box, pos.x, pos.y);
+                if (handle) {
+                    state.resizing = true; state.resizeHandle = handle;
+                    state.dragStart = { x: pos.x, y: pos.y };
+                    state.wmStartRatio = { x: state.wmRatioX, y: state.wmRatioY, w: state.wmRatioW, h: state.wmRatioH, fontSize: state.fontSize };
+                    state._activeCanvas = cv;
+                    state._startBoxW = box.w;
+                    state._startBoxH = box.h;
+                    cv.style.cursor = (handle === 'tl' || handle === 'br') ? 'nwse-resize' : 'nesw-resize';
+                    e.preventDefault(); return;
+                }
             }
             if (hitBox(box, pos.x, pos.y)) {
                 state.dragging = true;
                 state.dragStart = { x: pos.x, y: pos.y };
-                state.wmStartRatio = { x: state.wmRatioX, y: state.wmRatioY, w: state.wmRatioW, h: state.wmRatioH };
+                state.wmStartRatio = { x: state.wmRatioX, y: state.wmRatioY, w: state.wmRatioW, h: state.wmRatioH, fontSize: state.fontSize };
                 state._activeCanvas = cv;
+                state._startBoxW = box.w;
+                state._startBoxH = box.h;
                 cv.style.cursor = 'move';
                 e.preventDefault();
             }
@@ -3059,14 +3111,17 @@ const ImageTools = {
 
         function canvasMove(e) {
             if (!state.dragging && !state.resizing) {
-                // Update hover cursor on all canvases
                 if (state.mode === 'single') {
                     state.previewCanvases.forEach(pc => {
                         const pos = canvasPos(e, pc.canvas);
                         const box = wmBoxFor(pc.canvas);
-                        const h = hitHandle(pc.canvas, box, pos.x, pos.y);
-                        pc.canvas.style.cursor = h ? ((h === 'tl' || h === 'br') ? 'nwse-resize' : 'nesw-resize')
-                            : hitBox(box, pos.x, pos.y) ? 'move' : 'default';
+                        if (state.watermarkType !== 'text') {
+                            const handle = hitHandle(pc.canvas, box, pos.x, pos.y);
+                            pc.canvas.style.cursor = handle ? ((handle === 'tl' || handle === 'br') ? 'nwse-resize' : 'nesw-resize')
+                                : hitBox(box, pos.x, pos.y) ? 'move' : 'default';
+                        } else {
+                            pc.canvas.style.cursor = hitBox(box, pos.x, pos.y) ? 'move' : 'default';
+                        }
                     });
                 }
                 return;
@@ -3077,44 +3132,71 @@ const ImageTools = {
             const pos = canvasPos(e, cv);
             const dx = pos.x - state.dragStart.x;
             const dy = pos.y - state.dragStart.y;
-            const cw = cv.width, ch = cv.height, minSz = 20;
+            const cw = cv.width, ch = cv.height;
             const ws = state.wmStartRatio;
 
             if (state.dragging) {
-                // Convert start ratios to this canvas's pixel space
-                const startBox = {
-                    x: ws.x * cw - (ws.w * cw) / 2,
-                    y: ws.y * ch - (ws.h * ch) / 2,
-                    w: ws.w * cw,
-                    h: ws.h * ch
-                };
-                let nx = startBox.x + dx, ny = startBox.y + dy;
-                nx = Utils.clamp(nx, -startBox.w / 2, cw - startBox.w / 2);
-                ny = Utils.clamp(ny, -startBox.h / 2, ch - startBox.h / 2);
-                const newBox = { x: nx, y: ny, w: startBox.w, h: startBox.h };
-                setRatiosFromBox(newBox, cv);
-            } else if (state.resizing) {
-                const startBox = {
-                    x: ws.x * cw - (ws.w * cw) / 2,
-                    y: ws.y * ch - (ws.h * ch) / 2,
-                    w: ws.w * cw,
-                    h: ws.h * ch
-                };
-                const h = state.resizeHandle;
-                let nx = startBox.x, ny = startBox.y, nw = startBox.w, nh = startBox.h;
-                let aspect = null;
-                if (state.watermarkType === 'image' && state.watermarkImg) {
-                    aspect = state.watermarkImg.naturalWidth / state.watermarkImg.naturalHeight;
+                if (state.watermarkType === 'text') {
+                    const startCenterX = ws.x * cw;
+                    const startCenterY = ws.y * ch;
+                    let nx = startCenterX + dx;
+                    let ny = startCenterY + dy;
+                    const curBox = wmBoxFor(cv);
+                    nx = Utils.clamp(nx, curBox.w / 2, cw - curBox.w / 2);
+                    ny = Utils.clamp(ny, curBox.h / 2, ch - curBox.h / 2);
+                    state.wmRatioX = nx / cw;
+                    state.wmRatioY = ny / ch;
+                } else {
+                    const startBox = {
+                        x: ws.x * cw - (ws.w * cw) / 2,
+                        y: ws.y * ch - (ws.h * ch) / 2,
+                        w: ws.w * cw,
+                        h: ws.h * ch
+                    };
+                    let nx = startBox.x + dx, ny = startBox.y + dy;
+                    nx = Utils.clamp(nx, -startBox.w / 2, cw - startBox.w / 2);
+                    ny = Utils.clamp(ny, -startBox.h / 2, ch - startBox.h / 2);
+                    const newBox = { x: nx, y: ny, w: startBox.w, h: startBox.h };
+                    setRatiosFromBox(newBox, cv);
                 }
-                if (h === 'br') { nw = Math.max(minSz, startBox.w + dx); nh = aspect ? nw / aspect : Math.max(minSz, startBox.h + dy); }
-                else if (h === 'bl') { nw = Math.max(minSz, startBox.w - dx); nh = aspect ? nw / aspect : Math.max(minSz, startBox.h + dy); nx = startBox.x + startBox.w - nw; }
-                else if (h === 'tr') { nw = Math.max(minSz, startBox.w + dx); nh = aspect ? nw / aspect : Math.max(minSz, startBox.h - dy); ny = startBox.y + startBox.h - nh; }
-                else if (h === 'tl') { nw = Math.max(minSz, startBox.w - dx); nh = aspect ? nw / aspect : Math.max(minSz, startBox.h - dy); nx = startBox.x + startBox.w - nw; ny = startBox.y + startBox.h - nh; }
-                if (nx < 0) { nw += nx; nx = 0; } if (ny < 0) { nh += ny; ny = 0; }
-                if (nx + nw > cw) nw = cw - nx; if (ny + nh > ch) nh = ch - ny;
-                nw = Math.max(nw, minSz); nh = Math.max(nh, minSz);
-                const newBox = { x: nx, y: ny, w: nw, h: nh };
-                setRatiosFromBox(newBox, cv);
+            } else if (state.resizing) {
+                if (state.watermarkType === 'text') {
+                    const startW = state._startBoxW;
+                    const startH = state._startBoxH;
+                    const h = state.resizeHandle;
+                    let nw = startW, nh = startH;
+                    if (h === 'br') { nw = Math.max(20, startW + dx); nh = Math.max(20, startH + dy); }
+                    else if (h === 'bl') { nw = Math.max(20, startW - dx); nh = Math.max(20, startH + dy); }
+                    else if (h === 'tr') { nw = Math.max(20, startW + dx); nh = Math.max(20, startH - dy); }
+                    else if (h === 'tl') { nw = Math.max(20, startW - dx); nh = Math.max(20, startH - dy); }
+                    const scale = Math.min(nw / startW, nh / startH);
+                    state.wmRatioW = Utils.clamp(ws.w * scale, 0.02, 1);
+                    state.fontSize = Math.max(5, Math.round(ws.fontSize * scale));
+                    syncFontSizeSlider();
+                } else {
+                    const startBox = {
+                        x: ws.x * cw - (ws.w * cw) / 2,
+                        y: ws.y * ch - (ws.h * ch) / 2,
+                        w: ws.w * cw,
+                        h: ws.h * ch
+                    };
+                    const h = state.resizeHandle;
+                    let nx = startBox.x, ny = startBox.y, nw = startBox.w, nh = startBox.h;
+                    let aspect = null;
+                    if (state.watermarkType === 'image' && state.watermarkImg) {
+                        aspect = state.watermarkImg.naturalWidth / state.watermarkImg.naturalHeight;
+                    }
+                    const minSz = 20;
+                    if (h === 'br') { nw = Math.max(minSz, startBox.w + dx); nh = aspect ? nw / aspect : Math.max(minSz, startBox.h + dy); }
+                    else if (h === 'bl') { nw = Math.max(minSz, startBox.w - dx); nh = aspect ? nw / aspect : Math.max(minSz, startBox.h + dy); nx = startBox.x + startBox.w - nw; }
+                    else if (h === 'tr') { nw = Math.max(minSz, startBox.w + dx); nh = aspect ? nw / aspect : Math.max(minSz, startBox.h - dy); ny = startBox.y + startBox.h - nh; }
+                    else if (h === 'tl') { nw = Math.max(minSz, startBox.w - dx); nh = aspect ? nw / aspect : Math.max(minSz, startBox.h - dy); nx = startBox.x + startBox.w - nw; ny = startBox.y + startBox.h - nh; }
+                    if (nx < 0) { nw += nx; nx = 0; } if (ny < 0) { nh += ny; ny = 0; }
+                    if (nx + nw > cw) nw = cw - nx; if (ny + nh > ch) nh = ch - ny;
+                    nw = Math.max(nw, minSz); nh = Math.max(nh, minSz);
+                    const newBox = { x: nx, y: ny, w: nw, h: nh };
+                    setRatiosFromBox(newBox, cv);
+                }
             }
 
             clampRatios();
@@ -3150,42 +3232,48 @@ const ImageTools = {
             const opacity = state.watermarkType === 'text' ? state.textOpacity : state.imageOpacity;
 
             if (state.mode === 'single') {
-                const x = state.wmRatioX * oc.width - (state.wmRatioW * oc.width) / 2;
-                const y = state.wmRatioY * oc.height - (state.wmRatioH * oc.height) / 2;
-                const w = state.wmRatioW * oc.width;
-                const h = state.wmRatioH * oc.height;
-                ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-                if (state.watermarkType === 'text') {
-                    ctx.translate(x, y);
-                    drawTextWmFullRes(ctx, w, h, opacity);
+                if (state.watermarkType === 'text' && state.text) {
+                    const fs = Math.max(5, state.fontSize * (oc.width / 500));
+                    const ls = state.letterSpacing * (oc.width / 500);
+                    const textW = ctx.measureText(state.text).width + ([...state.text].length - 1) * ls;
+                    const padding = fs * 0.6;
+                    const boxW = textW + padding * 2;
+                    const boxH = fs * 1.4 + padding * 2;
+                    const centerX = state.wmRatioX * oc.width;
+                    const centerY = state.wmRatioY * oc.height;
+                    const x = centerX - boxW / 2;
+                    const y = centerY - boxH / 2;
+                    ctx.save();
+                    ctx.globalAlpha = opacity;
+                    ctx.fillStyle = state.textColor;
+                    ctx.font = `${state.fontWeight} ${fs}px "${state.fontFamily}", sans-serif`;
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    const cy = y + boxH / 2;
+                    const chars = [...state.text];
+                    if (ls > 0 && chars.length > 0) {
+                        const tw = chars.length * fs * 0.6 + (chars.length - 1) * ls;
+                        let px = x + boxW / 2 - tw / 2 + fs * 0.3;
+                        chars.forEach(ch => { ctx.fillText(ch, px, cy); px += fs * 0.6 + ls; });
+                    } else {
+                        ctx.fillText(state.text, x + boxW / 2, cy);
+                    }
+                    ctx.restore();
                 } else {
+                    const centerX = state.wmRatioX * oc.width;
+                    const centerY = state.wmRatioY * oc.height;
+                    const x = centerX - (state.wmRatioW * oc.width) / 2;
+                    const y = centerY - (state.wmRatioH * oc.height) / 2;
+                    const w = state.wmRatioW * oc.width;
+                    const h = state.wmRatioH * oc.height;
+                    ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
                     ctx.translate(x, y);
                     drawImageWmOnCanvas(ctx, 0, 0, w, h, opacity);
+                    ctx.restore();
                 }
-                ctx.restore();
             } else {
                 drawTiledOnCanvasAll(ctx, oc.width, oc.height, opacity, 1);
             }
             return await Utils.canvasToBlob(oc, 'image/png');
-        }
-
-        function drawTextWmFullRes(ctx, w, h, opacity) {
-            if (!state.text) return;
-            ctx.save();
-            ctx.globalAlpha = opacity;
-            ctx.fillStyle = state.textColor;
-            ctx.font = `${state.fontWeight} ${state.fontSize}px "${state.fontFamily}", sans-serif`;
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            const cx = w / 2, cy = h / 2;
-            if (state.letterSpacing > 0 && state.text.length > 0) {
-                const chars = [...state.text];
-                const tw = chars.length * state.fontSize * 0.6 + (chars.length - 1) * state.letterSpacing;
-                let px = cx - tw / 2 + state.fontSize * 0.3;
-                chars.forEach(ch => { ctx.fillText(ch, px, cy); px += state.fontSize * 0.6 + state.letterSpacing; });
-            } else {
-                ctx.fillText(state.text, cx, cy);
-            }
-            ctx.restore();
         }
 
         // ---- Main image upload ----
