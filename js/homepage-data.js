@@ -56,6 +56,14 @@ const HOMEPAGE_DATA = {
         "route": "#/stamp"
     },
     {
+        "id": "beads",
+        "icon": "🧶",
+        "iconClass": "beads",
+        "title": "拼豆图纸",
+        "desc": "图片转拼豆 · Artkal色板 · 自由绘制 · 高清导出",
+        "route": "#/beads"
+    },
+    {
         "id": "fbx-viewer",
         "icon": "🧊",
         "iconClass": "fbx",
@@ -65,21 +73,17 @@ const HOMEPAGE_DATA = {
     }
 ],
     changelog: {
-    "version": "v06.14.00",
-    "date": "2026年6月14日",
+    "version": "v06.16.00",
+    "date": "2026年6月16日",
     "sections": [
         {
             "icon": "✨",
-            "title": "新增网站",
+            "title": "新增功能",
             "type": "new",
             "items": [
                 {
-                    "title": "新增游戏板块",
-                    "desc": "新增游戏资源网站，免费下载破解游戏"
-                },
-                {
-                    "title": "新增小说板块",
-                    "desc": "新增热门小说txt全本下载网站推荐"
+                    "title": "拼豆图纸工具",
+                    "desc": "支持图片转拼豆图纸，Artkal S/R系列色板，自由绘制，底图参照，颜色替换，撤销重做，高清PDF/PNG导出"
                 }
             ]
         }

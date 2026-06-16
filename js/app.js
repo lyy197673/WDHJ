@@ -65,6 +65,9 @@ const App = {
             case 'stamp':
                 StampTools.render(content, sub || '');
                 break;
+            case 'beads':
+                BeadsTools.render(content, sub || 'auto');
+                break;
             case 'fbx-viewer':
                 await this._loadFBXViewer(content, sub || '');
                 break;
