@@ -4,6 +4,7 @@ const WordTools = {
     render(container, subTool) {
         this.state = {
             ignoreTip: localStorage.getItem('word_ignoreTip') === 'true',
+            ignoreFirstUseTip: localStorage.getItem('word_ignoreFirstUseTip') === 'true',
             results: [],
             converting: false
         };
@@ -54,10 +55,37 @@ const WordTools = {
                     </div>
                 </div>
             </div>
+
+            <div class="word-dialog-overlay" id="word-first-use-dialog" style="display:none">
+                <div class="word-dialog">
+                    <div class="word-dialog-icon">💡</div>
+                    <div class="word-dialog-title">首次使用提示</div>
+                    <div class="word-dialog-body">首次使用此工具系统需加载工具资源，处理文件会比较慢，接下来就好了，请耐心等待。</div>
+                    <div class="word-dialog-check">
+                        <input type="checkbox" id="word-firstuse-noagain">
+                        <label for="word-firstuse-noagain">不再提示</label>
+                    </div>
+                    <div class="word-dialog-btns">
+                        <button class="btn btn-primary" id="word-firstuse-ok">我知道了</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="word-dialog-overlay" id="word-result-dialog" style="display:none">
+                <div class="word-dialog">
+                    <div class="word-dialog-icon">✅</div>
+                    <div class="word-dialog-title">转换完成</div>
+                    <div class="word-dialog-body">文件已转换完成，可下载使用</div>
+                    <div class="word-dialog-btns">
+                        <button class="btn btn-primary" id="word-result-ok">确定</button>
+                    </div>
+                </div>
+            </div>
         `;
 
         this._bindEvents(container);
         this._showTab('img2word');
+        this._showFirstUseTip();
     },
 
     _bindEvents(container) {
@@ -211,7 +239,7 @@ const WordTools = {
                 type: 'docx'
             });
             this._renderDownloadList();
-            Toast.success('转换完成');
+            this._showResultDialog();
         } catch (err) {
             Loading.hide();
             this.state.converting = false;
@@ -314,7 +342,7 @@ const WordTools = {
                     this.state.results.push({ name: baseName + '_images.zip', dataUrl: result.zip_url, type: 'zip' });
                 }
                 this._renderDownloadList();
-                Toast.success('转换完成');
+                this._showResultDialog();
             } catch (err) {
                 Loading.hide();
                 this.state.converting = false;
@@ -411,7 +439,7 @@ const WordTools = {
                 });
                 this._renderDownloadList();
                 document.getElementById('word2pdf-status').textContent = '转换完成';
-                Toast.success('转换完成');
+                this._showResultDialog();
             } catch (err) {
                 Loading.hide();
                 this.state.converting = false;
@@ -440,6 +468,29 @@ const WordTools = {
             }
             overlay.style.display = 'none';
             onConfirm();
+        };
+    },
+
+    _showFirstUseTip() {
+        if (this.state.ignoreFirstUseTip) return;
+        const overlay = document.getElementById('word-first-use-dialog');
+        const noagain = document.getElementById('word-firstuse-noagain');
+        overlay.style.display = 'flex';
+
+        document.getElementById('word-firstuse-ok').onclick = () => {
+            if (noagain.checked) {
+                this.state.ignoreFirstUseTip = true;
+                localStorage.setItem('word_ignoreFirstUseTip', 'true');
+            }
+            overlay.style.display = 'none';
+        };
+    },
+
+    _showResultDialog() {
+        const overlay = document.getElementById('word-result-dialog');
+        overlay.style.display = 'flex';
+        document.getElementById('word-result-ok').onclick = () => {
+            overlay.style.display = 'none';
         };
     },
 
