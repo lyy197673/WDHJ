@@ -72,6 +72,14 @@ const HOMEPAGE_DATA = {
         "route": "#/word"
     },
     {
+        "id": "doubao",
+        "icon": "🎯",
+        "iconClass": "doubao",
+        "title": "豆包去水印",
+        "desc": "自动识别比例 · 裁剪去除水印 · 批量处理 · 无损放大",
+        "route": "#/doubao"
+    },
+    {
         "id": "fbx-viewer",
         "icon": "🧊",
         "iconClass": "fbx",
@@ -81,7 +89,7 @@ const HOMEPAGE_DATA = {
     }
 ],
     changelog: {
-    "version": "v06.18.14",
+    "version": "v06.18.23",
     "date": "2026年6月18日",
     "sections": [
         {
@@ -92,6 +100,10 @@ const HOMEPAGE_DATA = {
                 {
                     "title": "Word工具",
                     "desc": "支持图片转Word（EasyOCR文字识别）、Word转图片、Word转PDF，文件保持源文件名，转换完成后可在下载列表中手动下载或打包下载"
+                },
+                {
+                    "title": "豆包水印去除工具",
+                    "desc": "不是什么高科技，就是自动识别水印位置，保持图片比例的同时裁剪掉水印，支持批量处理，一键打包下载~"
                 }
             ]
         }

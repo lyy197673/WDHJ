@@ -71,6 +71,9 @@ const App = {
             case 'word':
                 WordTools.render(content, sub || 'img2word');
                 break;
+            case 'doubao':
+                DoubaoWatermark.render(content);
+                break;
             case 'fbx-viewer':
                 await this._loadFBXViewer(content, sub || '');
                 break;
