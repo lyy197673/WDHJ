@@ -43,7 +43,7 @@ const App = {
         if (!isFirst) {
             content.style.opacity = '0';
             content.style.transform = 'translateY(6px) scale(0.99)';
-            await new Promise(r => setTimeout(r, 80));
+            await new Promise(r => setTimeout(r, 120));
         }
 
         // Clear and scroll
@@ -68,6 +68,9 @@ const App = {
             case 'beads':
                 BeadsTools.render(content, sub || 'auto');
                 break;
+            case 'word':
+                WordTools.render(content, sub || 'img2word');
+                break;
             case 'fbx-viewer':
                 await this._loadFBXViewer(content, sub || '');
                 break;
@@ -84,9 +87,7 @@ const App = {
         } else {
             // Subsequent: double rAF ensures exit state was painted before fade-in
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    content.style.opacity = '1';
-                });
+                content.style.opacity = '1';
             });
         }
     },
@@ -102,8 +103,9 @@ const App = {
             `;
             content.style.opacity = '1';
             await window._fbxViewerPromise;
-            // Clear loading indicator
             content.innerHTML = '';
+            // Reset opacity so CSS entrance animation can take over
+            content.style.opacity = '0';
         }
 
         if (window._fbxViewerError) {
@@ -114,7 +116,6 @@ const App = {
                     <button class="btn btn-sm" onclick="location.reload()">刷新重试</button>
                 </div>
             `;
-            content.style.opacity = '1';
             return;
         }
 
@@ -129,7 +130,6 @@ const App = {
                     <button class="btn btn-sm" onclick="location.reload()">刷新重试</button>
                 </div>
             `;
-            content.style.opacity = '1';
         }
     }
 };

@@ -212,8 +212,8 @@ const Toast = {
         setTimeout(() => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(100%)';
-            toast.style.transition = '0.3s ease';
-            setTimeout(() => toast.remove(), 300);
+            toast.style.transition = 'all 250ms cubic-bezier(0.22, 0.61, 0.36, 1)';
+            setTimeout(() => toast.remove(), 260);
         }, duration);
     },
     success(msg) { this.show(msg, 'success'); },
@@ -592,7 +592,7 @@ function switchTabContent(container, newIndex, renderFn, duration = 220) {
 
     // ---- Animate ----
     const easing = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
-    exitPanel.style.transition = `transform ${duration}ms ${easing}`;
+    exitPanel.style.transition = `transform ${duration}ms ${easing}, opacity ${duration}ms ${easing}`;
     enterPanel.style.transition = `transform ${duration}ms ${easing}`;
 
     requestAnimationFrame(() => {

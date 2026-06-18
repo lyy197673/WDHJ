@@ -34,7 +34,17 @@
     --radius: 8px;
     --radius-lg: 12px;
     --radius-xl: 16px;
-    --transition: 0.2s ease;
+
+    /* Animation System */
+    --dur-fast: 150ms;
+    --dur-normal: 250ms;
+    --dur-slow: 350ms;
+    --dur-entrance: 450ms;
+    --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition: var(--dur-normal) var(--ease-out);
 }
 
 /* ===== Light Theme ===== */
@@ -76,7 +86,10 @@ body, .tool-card, .btn, .upload-area, .file-item, .file-list-row,
 .controls-panel, .action-bar, .preview-area, .tool-tabs, .stat-card, .toast,
 .control-group input, .control-group select, .split-group-item, .pdf-page-item,
 .merge-file-item, .layout-option, .tool-card-icon, .badge, .btn-icon-float, #app-footer {
-    transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    transition: background-color var(--dur-slow) var(--ease-out),
+                color var(--dur-slow) var(--ease-out),
+                border-color var(--dur-slow) var(--ease-out),
+                box-shadow var(--dur-slow) var(--ease-out);
 }
 
 body {
@@ -155,7 +168,7 @@ body::after {
     align-items: center;
     justify-content: center;
     color: var(--text-secondary);
-    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all var(--dur-normal) var(--ease-spring);
     box-shadow: var(--shadow-md);
 }
 
@@ -181,7 +194,7 @@ body::after {
 
 /* Theme toggle button animation */
 #btn-theme svg {
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform var(--dur-slow) var(--ease-spring);
 }
 
 [data-theme="light"] #btn-theme svg {
@@ -233,7 +246,7 @@ body::after {
     color: var(--primary-light);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.2s;
+    transition: color var(--dur-normal) var(--ease-out);
 }
 
 .footer-contact a:hover {
@@ -265,15 +278,15 @@ body::after {
     margin: 0 auto;
     width: 100%;
     opacity: 1;
-    transition: opacity 0.25s cubic-bezier(0.22, 0.61, 0.36, 1),
-                transform 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition: opacity var(--dur-normal) var(--ease-out),
+                transform var(--dur-normal) var(--ease-out);
 }
 
 /* ===== Homepage ===== */
 .homepage-hero {
     text-align: center;
     padding: 56px 0 40px;
-    animation: heroIn 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+    animation: heroIn var(--dur-entrance) var(--ease-out);
 }
 
 @keyframes heroIn {
@@ -303,7 +316,7 @@ body::after {
     color: var(--text-secondary);
     max-width: 520px;
     margin: 0 auto;
-    animation: fadeUpIn 0.5s 0.1s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation: fadeUpIn var(--dur-entrance) 0.1s var(--ease-out) both;
 }
 
 .homepage-badges {
@@ -312,7 +325,7 @@ body::after {
     gap: 10px;
     margin-top: 20px;
     flex-wrap: wrap;
-    animation: fadeUpIn 0.5s 0.15s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation: fadeUpIn var(--dur-entrance) 0.15s var(--ease-out) both;
 }
 
 @keyframes fadeUpIn {
@@ -347,13 +360,13 @@ body::after {
     border-radius: var(--radius-xl);
     padding: 28px 24px;
     cursor: pointer;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--dur-slow) var(--ease-in-out);
     text-align: center;
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    animation: cardIn 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation: cardIn var(--dur-entrance) var(--ease-out) both;
 }
 
 .tool-card:nth-child(1) { animation-delay: 0.05s; }
@@ -377,7 +390,7 @@ body::after {
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), var(--primary), transparent);
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity var(--dur-normal) var(--ease-out);
 }
 
 .tool-card::after {
@@ -386,7 +399,7 @@ body::after {
     inset: 0;
     background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.08) 0%, transparent 60%);
     opacity: 0;
-    transition: opacity 0.35s;
+    transition: opacity var(--dur-slow) var(--ease-out);
 }
 
 .tool-card:hover {
@@ -441,7 +454,7 @@ body::after {
     transform: translateY(-50%);
     color: var(--text-muted);
     opacity: 0;
-    transition: all 0.25s ease;
+    transition: all var(--dur-normal) var(--ease-out);
 }
 
 .tool-card:hover .tool-card-arrow {
@@ -452,7 +465,7 @@ body::after {
 
 /* ===== Tool Page ===== */
 .tool-page {
-    animation: toolPageIn 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+    animation: toolPageIn var(--dur-entrance) var(--ease-out);
 }
 
 @keyframes toolPageIn {
@@ -462,7 +475,7 @@ body::after {
 
 .tool-page-header {
     margin-bottom: 24px;
-    animation: fadeUpIn 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation: fadeUpIn var(--dur-entrance) var(--ease-out) both;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -478,7 +491,7 @@ body::after {
     color: var(--text-secondary);
     font-size: 14px;
     flex: 1;
-    animation: fadeUpIn 0.45s 0.05s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation: fadeUpIn var(--dur-entrance) 0.05s var(--ease-out) both;
 }
 
 .tool-tabs {
@@ -491,7 +504,7 @@ body::after {
     padding: 4px;
     overflow-x: auto;
     backdrop-filter: blur(8px);
-    animation: fadeUpIn 0.4s 0.08s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation: fadeUpIn var(--dur-entrance) 0.08s var(--ease-out) both;
 }
 
 .tool-tab {
@@ -525,7 +538,7 @@ body::after {
     padding: 40px 24px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--dur-slow) var(--ease-out);
     background: var(--bg-card);
     backdrop-filter: blur(8px);
     position: relative;
@@ -537,7 +550,7 @@ body::after {
     position: absolute;
     inset: 0;
     background: radial-gradient(ellipse at 50% 50%, rgba(99,102,241,0.05) 0%, transparent 60%);
-    transition: opacity 0.3s;
+    transition: opacity var(--dur-slow) var(--ease-out);
     opacity: 0;
 }
 
@@ -754,7 +767,7 @@ body::after {
     cursor: pointer;
     font-size: 13px;
     font-weight: 500;
-    transition: all 0.25s ease;
+    transition: all var(--dur-normal) var(--ease-out);
     white-space: nowrap;
     backdrop-filter: blur(4px);
     position: relative;
@@ -1043,7 +1056,7 @@ body::after {
     height: 100%;
     background: linear-gradient(90deg, var(--primary), var(--accent));
     border-radius: 3px;
-    transition: width 0.3s ease;
+    transition: width var(--dur-slow) var(--ease-out);
     box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
 }
 
@@ -1055,7 +1068,7 @@ body::after {
     border: 2px solid rgba(255,255,255,0.1);
     border-top-color: var(--primary);
     border-radius: 50%;
-    animation: spin 0.6s linear infinite;
+    animation: spin var(--dur-entrance) linear infinite;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -1103,7 +1116,7 @@ body::after {
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
     font-size: 13px;
-    animation: slideIn 0.3s ease;
+    animation: slideIn var(--dur-slow) var(--ease-out);
     max-width: 360px;
     display: flex;
     align-items: center;
@@ -1130,6 +1143,12 @@ body::after {
     display: flex;
     align-items: center;
     justify-content: center;
+    animation: fadeIn var(--dur-normal) var(--ease-out);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .lightbox-content {
@@ -1197,6 +1216,7 @@ body::after {
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(4px);
+    animation: fadeIn var(--dur-normal) var(--ease-out);
 }
 
 [data-theme="light"] .drag-overlay {
@@ -1263,12 +1283,12 @@ input[type="checkbox"] {
 }
 .tab-content.active {
     display: block;
-    animation: tabPanelIn 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation: tabPanelIn var(--dur-slow) var(--ease-out) both;
 }
 
 /* Any tab panel gets auto entrance animation */
 .tab-panel {
-    animation: tabPanelIn 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation: tabPanelIn var(--dur-slow) var(--ease-out) both;
 }
 
 @keyframes tabPanelIn {
@@ -1383,7 +1403,9 @@ input[type="checkbox"] {
     border-radius: var(--radius-lg);
     overflow: hidden;
     cursor: grab;
-    transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+    transition: box-shadow var(--dur-normal) var(--ease-out),
+                border-color var(--dur-normal) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out);
     backdrop-filter: blur(4px);
 }
 
@@ -1467,7 +1489,8 @@ input[type="checkbox"] {
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.15s;
+    transition: opacity var(--dur-fast) var(--ease-out);
+    z-index: 2;
 }
 
 .merge-file-item:hover .merge-file-remove { opacity: 1; }
@@ -1628,6 +1651,7 @@ input[type="checkbox"] {
     padding: 0 !important;
     margin: 0 !important;
     overflow: hidden;
+    animation: fadeIn var(--dur-entrance) var(--ease-out);
 }
 
 .fbx-layout {
@@ -1682,7 +1706,7 @@ input[type="checkbox"] {
     padding: 20px 12px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--dur-slow) var(--ease-out);
     color: var(--text-secondary);
 }
 
@@ -1749,7 +1773,7 @@ input[type="checkbox"] {
     font-size: 11px;
     font-weight: 500;
     color: var(--text-secondary);
-    transition: all 0.2s ease;
+    transition: all var(--dur-normal) var(--ease-out);
     white-space: nowrap;
     text-align: center;
 }
@@ -1809,7 +1833,7 @@ input[type="checkbox"] {
     padding: 3px 6px;
     cursor: pointer;
     border-radius: 4px;
-    transition: background 0.15s;
+    transition: background var(--dur-fast) var(--ease-out);
     white-space: nowrap;
 }
 
@@ -1859,7 +1883,7 @@ input[type="checkbox"] {
     padding: 2px;
     border-radius: 3px;
     opacity: 0.6;
-    transition: opacity 0.15s;
+    transition: opacity var(--dur-fast) var(--ease-out);
 }
 
 .fbx-tree-vis:hover {
@@ -2007,7 +2031,7 @@ input[type="checkbox"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.15s ease;
+    transition: all var(--dur-fast) var(--ease-out);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
 }
@@ -2142,20 +2166,20 @@ input[type="checkbox"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: splashFadeIn 0.3s ease;
+    animation: fadeIn var(--dur-slow) var(--ease-out);
 }
 
 .splash-overlay.closing {
-    animation: splashFadeOut 0.25s ease forwards;
+    animation: fadeOut var(--dur-normal) var(--ease-out) forwards;
     pointer-events: none;
 }
 
-@keyframes splashFadeIn {
+@keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-@keyframes splashFadeOut {
+@keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; }
 }
@@ -2182,7 +2206,7 @@ input[type="checkbox"] {
     border-radius: var(--radius-xl);
     box-shadow: 0 24px 80px rgba(0,0,0,0.6), var(--primary-glow);
     overflow: hidden;
-    animation: splashModalIn 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+    animation: splashModalIn var(--dur-entrance) var(--ease-out);
     display: flex;
     flex-direction: column;
 }
@@ -2293,7 +2317,7 @@ input[type="checkbox"] {
     background: var(--bg-input);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    transition: all 0.2s ease;
+    transition: all var(--dur-normal) var(--ease-out);
 }
 
 .splash-list li:hover {
@@ -2368,7 +2392,7 @@ input[type="checkbox"] {
     font-size: 13px;
     color: var(--text-secondary);
     user-select: none;
-    transition: color 0.2s;
+    transition: color var(--dur-normal) var(--ease-out);
 }
 
 .splash-checkbox-label:hover {
@@ -2387,7 +2411,7 @@ input[type="checkbox"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all var(--dur-normal) var(--ease-out);
     flex-shrink: 0;
 }
 
@@ -2420,7 +2444,7 @@ input[type="checkbox"] {
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.3px;
-    transition: all 0.3s ease;
+    transition: all var(--dur-normal) var(--ease-out);
     white-space: nowrap;
     flex-shrink: 0;
 }
@@ -2436,7 +2460,7 @@ input[type="checkbox"] {
 }
 
 .splash-close-btn svg {
-    transition: transform 0.2s ease;
+    transition: transform var(--dur-normal) var(--ease-out);
 }
 
 .splash-close-btn:hover svg {
@@ -2508,7 +2532,7 @@ input[type="checkbox"] {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: shimmer 3s ease-in-out infinite;
+    animation: shimmer 3s ease-in-out infinite, fadeUpIn var(--dur-entrance) var(--ease-out) both;
     background-size: 200% 200%;
 }
 
@@ -2517,10 +2541,12 @@ input[type="checkbox"] {
     color: var(--text-secondary);
     text-align: center;
     margin-bottom: 32px;
+    animation: fadeUpIn var(--dur-entrance) 0.1s var(--ease-out) both;
 }
 
 .site-links-group {
     margin-bottom: 28px;
+    animation: fadeUpIn var(--dur-entrance) 0.15s var(--ease-out) both;
 }
 
 .site-links-group-title {
@@ -2529,6 +2555,7 @@ input[type="checkbox"] {
     color: var(--text-secondary);
     margin-bottom: 12px;
     padding-left: 4px;
+    animation: fadeUpIn var(--dur-entrance) 0.2s var(--ease-out) both;
 }
 
 .site-links-grid {
@@ -2536,6 +2563,13 @@ input[type="checkbox"] {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 14px;
 }
+
+.site-links-grid .site-link-card:nth-child(1) { animation-delay: 0.25s; }
+.site-links-grid .site-link-card:nth-child(2) { animation-delay: 0.3s; }
+.site-links-grid .site-link-card:nth-child(3) { animation-delay: 0.35s; }
+.site-links-grid .site-link-card:nth-child(4) { animation-delay: 0.4s; }
+.site-links-grid .site-link-card:nth-child(5) { animation-delay: 0.45s; }
+.site-links-grid .site-link-card:nth-child(6) { animation-delay: 0.5s; }
 
 .site-link-card {
     display: flex;
@@ -2549,6 +2583,7 @@ input[type="checkbox"] {
     color: var(--text);
     transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
     cursor: pointer;
+    animation: cardIn var(--dur-entrance) var(--ease-out) both;
 }
 
 .site-link-card:hover {
@@ -2628,7 +2663,7 @@ input[type="checkbox"] {
     box-shadow: var(--shadow-md);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
+    transition: opacity var(--dur-normal) var(--ease-out), visibility var(--dur-normal) var(--ease-out);
     pointer-events: none;
     z-index: 50;
 }
@@ -2704,7 +2739,7 @@ input[type="checkbox"] {
     height: 100%;
     background: var(--primary);
     border-radius: 2px;
-    transition: width 0.3s ease;
+    transition: width var(--dur-slow) var(--ease-out);
 }
 
 /* ===== Stamp Help Modal ===== */
@@ -3305,7 +3340,7 @@ input[type="checkbox"] {
     border-radius: 4px;
     cursor: pointer;
     border: 2px solid transparent;
-    transition: border-color 0.15s, transform 0.15s;
+    transition: border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
 }
 
 .beads-color-chip:hover {
@@ -3496,7 +3531,7 @@ input[type="checkbox"] {
     border-radius: var(--radius);
     background: var(--bg-input);
     cursor: pointer;
-    transition: border-color 0.15s;
+    transition: border-color var(--dur-fast) var(--ease-out);
 }
 
 .beads-color-selector:hover {
@@ -3589,7 +3624,7 @@ input[type="checkbox"] {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: all 0.15s;
+    transition: all var(--dur-fast) var(--ease-spring);
     position: relative;
 }
 
@@ -3617,4 +3652,176 @@ input[type="checkbox"] {
     gap: 8px;
     padding: 12px 20px;
     border-top: 1px solid var(--border);
+}
+
+/* ===== Word Tools ===== */
+.word-upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px 24px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: all var(--transition);
+    color: var(--text-secondary);
+}
+.word-upload-area:hover, .word-upload-area.drag-over {
+    border-color: var(--primary);
+    background: var(--primary-bg);
+}
+.word-upload-area svg {
+    opacity: 0.5;
+}
+.word-upload-area p {
+    font-size: 15px;
+    color: var(--text);
+}
+.word-upload-area span {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.word-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+.word-preview-item {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+}
+.word-preview-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+.word-preview-name {
+    display: block;
+    padding: 6px 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.word-preview-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--transition);
+}
+.word-preview-item:hover .word-preview-remove {
+    opacity: 1;
+}
+
+.word-select {
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-input);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+}
+.word-select:focus {
+    border-color: var(--primary);
+}
+
+.word-img-result {
+    margin-top: 16px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 24px;
+}
+
+/* Word Dialog */
+.word-dialog-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+.word-dialog {
+    background: var(--bg-card-solid);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 32px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+.word-dialog-icon { font-size: 48px; margin-bottom: 8px; }
+.word-dialog-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+.word-dialog-body { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+.word-dialog-check { margin-bottom: 16px; font-size: 13px; color: var(--text-secondary); }
+.word-dialog-check input { margin-right: 6px; }
+
+/* Word Download Panel */
+.word-download-panel {
+    margin-top: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    overflow: hidden;
+}
+.word-download-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+}
+.word-download-header h4 { margin: 0; font-size: 14px; }
+.word-download-header div { display: flex; gap: 6px; }
+.word-download-list { padding: 8px 0; }
+.word-dl-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+}
+.word-dl-item:last-child { border-bottom: none; }
+.word-dl-info { flex: 1; min-width: 0; }
+.word-dl-name {
+    display: block;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.word-dl-type { font-size: 11px; color: var(--text-muted); }
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

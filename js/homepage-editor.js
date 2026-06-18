@@ -141,6 +141,8 @@
         { id: 'pdf', icon: '📄', iconClass: 'pdf', title: 'PDF工具', desc: '转换 · 拆分 · 合并 · 压缩', route: '#/pdf' },
         { id: 'ppt', icon: '📊', iconClass: 'ppt', title: 'PPT工具', desc: '拆分 · 转换 · 压缩', route: '#/ppt' },
         { id: 'stamp', icon: '🔏', iconClass: 'stamp', title: '盖章工具', desc: '自定义印章 · 图片/PDF盖章 · 混合模式 · 批量导出', route: '#/stamp' },
+        { id: 'beads', icon: '🧶', iconClass: 'beads', title: '拼豆图纸', desc: '图片转拼豆 · Artkal色板 · 自由绘制 · 高清导出', route: '#/beads' },
+        { id: 'word', icon: '📝', iconClass: 'word', title: 'Word工具', desc: '图片转Word · Word转图片 · 转PDF', route: '#/word' },
         { id: 'fbx-viewer', icon: '🧊', iconClass: 'fbx', title: 'FBX查看器', desc: '3D模型预览 · 部件编辑 · 动画播放 · 截图导出', route: '#/fbx-viewer' },
     ];
 
@@ -281,6 +283,12 @@ const HOMEPAGE_DATA = {
     }
 
     function loadFromStorage() {
+        if (typeof HOMEPAGE_DATA !== 'undefined') {
+            if (HOMEPAGE_DATA.changelog) changelogData = HOMEPAGE_DATA.changelog;
+            if (HOMEPAGE_DATA.hero) heroData = HOMEPAGE_DATA.hero;
+            if (HOMEPAGE_DATA.tools) toolsData = HOMEPAGE_DATA.tools;
+            return;
+        }
         try {
             const c = localStorage.getItem('editor_changelog');
             if (c) changelogData = JSON.parse(c);

@@ -85,7 +85,7 @@
                         更新日志
                     </div>
                     <h2 class="splash-title">没想到吧，又更新了！</h2>
-                    <p class="splash-version">v2.2 · 2026年6月16日更新</p>
+                    <p class="splash-version">v2.3 · 2026年6月18日更新</p>
                 </div>
                 <div class="splash-body">
                     <div class="splash-section">
@@ -96,8 +96,8 @@
                             <li>
                                 <span class="splash-tag new">新</span>
                                 <div class="splash-item-content">
-                                    <strong>拼豆图纸工具</strong>
-                                    <p>支持图片转拼豆图纸，Artkal S/R系列色板，自由绘制模式，底图参照，颜色替换，撤销重做，高清PDF/PNG导出。</p>
+                                    <strong>Word工具</strong>
+                                    <p>支持图片转Word（EasyOCR文字识别）、Word转图片、Word转PDF，文件保持源文件名，转换完成后可在下载列表中手动下载或打包下载</p>
                                 </div>
                             </li>
                         </ul>
@@ -110,15 +110,8 @@
                             <li>
                                 <span class="splash-tag fix">修复</span>
                                 <div class="splash-item-content">
-                                    <strong>盖章工具印章拖拽失效</strong>
-                                    <p>修复了从印章库拖拽印章到画布时被全局拖放覆盖层拦截的问题，现在拖放放置正常工作。</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="splash-tag fix">修复</span>
-                                <div class="splash-item-content">
-                                    <strong>印章库刷新丢失</strong>
-                                    <p>修复了导入的印章在页面刷新后消失的问题，印章现在通过 localStorage 持久化存储，刷新不丢失。</p>
+                                    <strong>编辑器数据同步</strong>
+                                    <p>修复编辑器每次打开无法自动获取当前主页数据的问题</p>
                                 </div>
                             </li>
                         </ul>
@@ -131,15 +124,8 @@
                             <li>
                                 <span class="splash-tag improve">优化</span>
                                 <div class="splash-item-content">
-                                    <strong>画布缩放体验</strong>
-                                    <p>画布缩放改为 CSS Transform 架构，保留原始分辨率。支持鼠标滚轮以光标为中心缩放、工具栏一键适应窗口/1:1 重置、空白区域拖拽平移。</p>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="splash-tag improve">优化</span>
-                                <div class="splash-item-content">
-                                    <strong>导出格式自由选择</strong>
-                                    <p>无论底图是图片还是 PDF，导出时均可自由选择 PNG / JPG / PDF 三种格式，不再受限于输入类型。</p>
+                                    <strong>Word工具交互优化</strong>
+                                    <p>转换前提示说明，支持不再提示；转换完成后展示下载列表，可单个下载或打包ZIP下载</p>
                                 </div>
                             </li>
                         </ul>
@@ -180,6 +166,7 @@
     <script src="js/ppt-tools.js"></script>
     <script src="js/stamp-tools.js"></script>
     <script src="js/beads-tools.js"></script>
+    <script src="js/word-tools.js"></script>
     <script src="js/site-links.js"></script>
 
     <script src="js/fbx-viewer.js"></script>

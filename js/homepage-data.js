@@ -64,6 +64,14 @@ const HOMEPAGE_DATA = {
         "route": "#/beads"
     },
     {
+        "id": "word",
+        "icon": "📝",
+        "iconClass": "word",
+        "title": "Word工具",
+        "desc": "图片转Word · Word转图片 · 转PDF ",
+        "route": "#/word"
+    },
+    {
         "id": "fbx-viewer",
         "icon": "🧊",
         "iconClass": "fbx",
@@ -73,8 +81,8 @@ const HOMEPAGE_DATA = {
     }
 ],
     changelog: {
-    "version": "v06.16.00",
-    "date": "2026年6月16日",
+    "version": "v06.18.14",
+    "date": "2026年6月18日",
     "sections": [
         {
             "icon": "✨",
@@ -82,8 +90,8 @@ const HOMEPAGE_DATA = {
             "type": "new",
             "items": [
                 {
-                    "title": "拼豆图纸工具",
-                    "desc": "支持图片转拼豆图纸，Artkal S/R系列色板，自由绘制，底图参照，颜色替换，撤销重做，高清PDF/PNG导出"
+                    "title": "Word工具",
+                    "desc": "支持图片转Word（EasyOCR文字识别）、Word转图片、Word转PDF，文件保持源文件名，转换完成后可在下载列表中手动下载或打包下载"
                 }
             ]
         }
