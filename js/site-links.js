@@ -33,7 +33,19 @@ const SITE_LINKS = [
                 "name": "PDF24",
                 "desc": "非常强大且全能的pdf处理工具，完全免费，但有时下载速度会有点慢",
                 "url": "https://tools.pdf24.org/zh/",
-                "icon": "🔗"
+                "icon": "📫"
+            },
+            {
+                "name": "文件转换",
+                "desc": "支持上百种文件格式的自由转换",
+                "url": "https://convertio.co/zh/",
+                "icon": "⚡"
+            },
+            {
+                "name": "文件压缩",
+                "desc": "支持各种文件的压缩，减小体积",
+                "url": "https://freecompress.com/zh-cn",
+                "icon": "📦"
             }
         ]
     },

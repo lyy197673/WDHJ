@@ -89,8 +89,8 @@ const HOMEPAGE_DATA = {
     }
 ],
     changelog: {
-    "version": "v06.18.23",
-    "date": "2026年6月18日",
+    "version": "v06.23.23",
+    "date": "2026年6月23日",
     "sections": [
         {
             "icon": "✨",
