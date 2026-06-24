@@ -2854,7 +2854,6 @@ input[type="checkbox"] {
     -webkit-backdrop-filter: blur(16px) saturate(120%);
     box-shadow: 0 1px 6px rgba(0,0,0,0.06);
     position: relative;
-    overflow: hidden;
 }
 
 .site-link-card::before {
@@ -2886,6 +2885,7 @@ input[type="checkbox"] {
     opacity: 0.6;
     transition: opacity 0.4s ease;
     pointer-events: none;
+    z-index: 1;
 }
 
 .site-link-card::after {
@@ -2904,6 +2904,7 @@ input[type="checkbox"] {
     opacity: 0;
     transition: opacity 0.5s ease;
     pointer-events: none;
+    z-index: 1;
 }
 
 .site-link-card:hover {
@@ -2915,7 +2916,10 @@ input[type="checkbox"] {
     opacity: 1;
     --edge-angle: 180deg;
 }
-.site-link-card:hover::after { opacity: 1; }
+
+.site-link-card:hover::after {
+    opacity: 1;
+}
 
 .site-link-icon {
     font-size: 24px;
@@ -2930,11 +2934,15 @@ input[type="checkbox"] {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    position: relative;
+    z-index: 2;
 }
 
 .site-link-info {
     flex: 1;
     min-width: 0;
+    position: relative;
+    z-index: 2;
 }
 
 .site-link-name {
@@ -2961,6 +2969,8 @@ input[type="checkbox"] {
     flex-shrink: 0;
     color: var(--text-muted);
     transition: color var(--transition), transform var(--transition);
+    position: relative;
+    z-index: 2;
 }
 
 .site-link-card:hover .site-link-arrow {
@@ -4474,22 +4484,6 @@ input[type="checkbox"] {
 }
 
 .tool-card:hover::after {
-    background: linear-gradient(
-        105deg,
-        transparent 15%,
-        rgba(255,255,255,0.03) 25%,
-        rgba(255,255,255,0.08) 40%,
-        rgba(255,255,255,0.12) 50%,
-        rgba(255,255,255,0.08) 60%,
-        rgba(255,255,255,0.03) 75%,
-        transparent 85%
-    );
-    background-size: 200% 100%;
-    animation: glassShimmer 1s ease-in-out;
-    opacity: 0.8;
-}
-
-.site-link-card:hover::after {
     background: linear-gradient(
         105deg,
         transparent 15%,
