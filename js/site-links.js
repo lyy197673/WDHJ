@@ -120,5 +120,17 @@ const SITE_LINKS = [
                 "icon": "📱"
             }
         ]
+    },
+    {
+        "category": "壁纸资源",
+        "icon": "✨",
+        "items": [
+            {
+                "name": "哲风壁纸",
+                "desc": "海量高清4K壁纸免费下载（每天有次数限制）",
+                "url": "https://haowallpaper.com/",
+                "icon": "🖼️"
+            }
+        ]
     }
 ];
