@@ -2,6 +2,24 @@
 // 格式: [{ category: '分类名', icon: '🎨', items: [{ name: '站名', desc: '描述', url: 'https://...', icon: '🔗' }] }]
 const SITE_LINKS = [
     {
+        "category": "站长其他网站",
+        "icon": "✨",
+        "items": [
+            {
+                "name": "P章盖章工具",
+                "desc": "盖章p章小工具，制作印章、文档盖章一体",
+                "url": "https://zxwdgz.pages.dev/",
+                "icon": "📋"
+            },
+            {
+                "name": "图表生成器",
+                "desc": "快速生成高清图表图片，支持：柱状图、折线图、面积图、条形图、饼状图、漏斗图、雷达图、矩阵气泡、词云图、桑基图和共现网络等十一种图表类型",
+                "url": "https://yytb.pages.dev/",
+                "icon": "📊"
+            }
+        ]
+    },
+    {
         "category": "实用工具",
         "icon": "📌",
         "items": [

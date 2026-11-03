@@ -538,7 +538,7 @@ function initGlobalDragDrop() {
             overlay.style.pointerEvents = '';
 
             if (target) {
-                const uploadArea = target.closest('.upload-area, .stamp-base-upload, .stamp-canvas-viewport, .fbx-upload-area');
+                const uploadArea = target.closest('.upload-area, .stamp-base-upload, .stamp-canvas-viewport');
                 if (uploadArea) {
                     // Re-dispatch the drop event to the upload area
                     const dropEvent = new DragEvent('drop', {
@@ -793,12 +793,11 @@ function initFooterEmail() {
     });
 }
 
-// Initialize lightbox, global drag, theme, splash screen, email, and particles on load
+// Initialize lightbox, global drag, theme, splash screen, and email on load
 document.addEventListener('DOMContentLoaded', () => {
     Lightbox.init();
     initGlobalDragDrop();
     Theme.init();
     SplashScreen.init();
     initFooterEmail();
-    Particles.init();
 });

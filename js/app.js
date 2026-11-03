@@ -33,12 +33,6 @@ const App = {
         const isFirst = this._initialLoad;
         this._initialLoad = false;
 
-        // Cleanup previous module
-        if (!isFirst && this._currentSection === 'fbx-viewer' && typeof FBXViewer !== 'undefined') {
-            FBXViewer.dispose();
-        }
-        this._currentSection = section;
-
         // Exit animation (skip on first load)
         if (!isFirst) {
             content.style.opacity = '0';
@@ -65,17 +59,11 @@ const App = {
             case 'stamp':
                 StampTools.render(content, sub || '');
                 break;
-            case 'beads':
-                BeadsTools.render(content, sub || 'auto');
-                break;
             case 'word':
                 WordTools.render(content, sub || 'img2word');
                 break;
             case 'doubao':
                 DoubaoWatermark.render(content);
-                break;
-            case 'fbx-viewer':
-                await this._loadFBXViewer(content, sub || '');
                 break;
 
             default:
@@ -92,47 +80,6 @@ const App = {
             requestAnimationFrame(() => {
                 content.style.opacity = '1';
             });
-        }
-    },
-
-    async _loadFBXViewer(content, sub) {
-        // If dependencies are still loading (async import from CDN), wait for them
-        if (!window._fbxViewerReady && window._fbxViewerPromise) {
-            content.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;">
-                    <div class="spinner"></div>
-                    <p style="color:var(--text-secondary);font-size:14px;">正在加载 3D 引擎...</p>
-                </div>
-            `;
-            content.style.opacity = '1';
-            await window._fbxViewerPromise;
-            content.innerHTML = '';
-            // Reset opacity so CSS entrance animation can take over
-            content.style.opacity = '0';
-        }
-
-        if (window._fbxViewerError) {
-            content.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;">
-                    <p style="color:var(--danger);font-size:16px;">⚠ 3D 引擎加载失败</p>
-                    <p style="color:var(--text-muted);font-size:13px;">${window._fbxViewerError.message || 'CDN 连接失败'}</p>
-                    <button class="btn btn-sm" onclick="location.reload()">刷新重试</button>
-                </div>
-            `;
-            return;
-        }
-
-        try {
-            FBXViewer.render(content, sub);
-        } catch (err) {
-            console.error('FBXViewer render error:', err);
-            content.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;">
-                    <p style="color:var(--danger);font-size:16px;">⚠ 渲染失败</p>
-                    <p style="color:var(--text-muted);font-size:13px;">${err.message || '未知错误'}</p>
-                    <button class="btn btn-sm" onclick="location.reload()">刷新重试</button>
-                </div>
-            `;
         }
     }
 };

@@ -2,7 +2,7 @@
 const HOMEPAGE_DATA = {
     hero: {
     "title": "YY 导航",
-    "desc": "导航中心，内置搜索引擎、自动定位天气和日历，一站直达常用网站",
+    "desc": "",
     "badges": [
         {
             "icon": "🔍",
@@ -56,14 +56,6 @@ const HOMEPAGE_DATA = {
         "route": "#/stamp"
     },
     {
-        "id": "beads",
-        "icon": "🧶",
-        "iconClass": "beads",
-        "title": "拼豆图纸",
-        "desc": "图片转拼豆 · Artkal色板 · 自由绘制 · 高清导出",
-        "route": "#/beads"
-    },
-    {
         "id": "word",
         "icon": "📝",
         "iconClass": "word",
@@ -78,39 +70,20 @@ const HOMEPAGE_DATA = {
         "title": "豆包去水印",
         "desc": "自动识别比例 · 裁剪去除水印 · 批量处理 · 无损放大",
         "route": "#/doubao"
-    },
-    {
-        "id": "fbx-viewer",
-        "icon": "🧊",
-        "iconClass": "fbx",
-        "title": "FBX查看器",
-        "desc": "3D模型预览 · 部件编辑 · 动画播放 · 截图导出",
-        "route": "#/fbx-viewer"
     }
 ],
     changelog: {
-    "version": "v07.21.23",
-    "date": "2026年7月21日",
+    "version": "v11.03.09",
+    "date": "2026年11月3日",
     "sections": [
         {
-            "icon": "✨",
-            "title": "新增功能",
+            "icon": "📌",
+            "title": "新增板块",
             "type": "new",
             "items": [
                 {
-                    "title": "搜索引擎",
-                    "desc": "新增搜索引擎框，可以当百度用"
-                }
-            ]
-        },
-        {
-            "icon": "🌐",
-            "title": "新增网站",
-            "type": "new",
-            "items": [
-                {
-                    "title": "哲风壁纸",
-                    "desc": "高清4k壁纸免费使用"
+                    "title": "新增【站长其他网站】板块",
+                    "desc": "都是一些站长制作的其他实用小网站"
                 }
             ]
         }
